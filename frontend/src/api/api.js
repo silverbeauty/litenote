@@ -8,8 +8,8 @@ const Api = {
     this.store = 1
   },
 
-  getMerchant () {
-    return axios.get(this._url('merchant/first'),
+  getNoteList () {
+    return axios.get(this._url('note'),
       {
         headers: this._headers()
       }).then((response) => {
@@ -20,8 +20,8 @@ const Api = {
       })
   },
 
-  getRecommendProduct() {
-    return axios.get(this._url('merchant/get_recommend_product'),
+  getNote(id) {
+    return axios.get(this._url('note/'+id),
       {
         headers: this._headers()
       }).then((response) => {
@@ -32,17 +32,12 @@ const Api = {
       })
   },
 
-  
-  //////////////////////////////////////////////////////////////////////   
-  //////////////////// Login API. //////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////   
-
-  loginMerchant (email, password) {
+  postNote (title, content) {
     const data = {
-      email: email,
-      password: password
+      title: title,
+      content: content
     }
-    return axios.post(this._url('user/login'), data,
+    return axios.post(this._url('note'), data,
       {
         headers: this._headers()
       }).then((response) => {
@@ -52,6 +47,27 @@ const Api = {
       }).catch((e) => {
         return this._responseError(e)
       })
+  },
+
+  _url (path) {
+    return `${API_URL}/${path}`
+  },
+
+  _headers () {
+    return {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  },
+
+  _responseData (response, transformer) {
+    let data = response.data
+
+    if (transformer !== undefined) {
+      data = transformer(data)
+    }
+
+    return Promise.resolve(data)
   },
 
 }

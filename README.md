@@ -1,38 +1,106 @@
-![Outlier.org](https://i.imgur.com/vJowpL1.png)
+# Lite Note
 
----
+## How to run
+### Dev  
+`npm run dev`
+### Production
+`npm run start`
 
-# Outlier Engineering Node.js JSON DB Challenge
 
-Our apps need to query and store lots of information. We want to make sure that you have a good understanding of JavaScript and Node.js fundamentals. Can you build a simple API that can read data from and write data to JSON files with Node.js while following [Outlier's best practices](https://github.com/outlier-org/onboarding/blob/master/README.md#engineering-onboarding-guide)?
+#### PORT=3000
 
-## The Challenge
+## Endpoints
 
-Build an API with the following:
+### Note APIs
 
-- Endpoints
-  - PUT /:student-id/:propertyName(/:propertyName)
-    - Stores data within `/data/${studentId}.json`.
-    - If that file or property doesn't exist it is created.
-    - Should also set nested properties: `curl -X PUT -d '{ "score": 98 }' http://localhost:1337/rn1abu8/courses/calculus/quizzes/ye0ab61` would mean that `require('./data/rn1abu8.json').courses.calculus.quizzes.ye0ab61.score === 98`
-  - GET /:student-id/:propertyName(/:propertyName)
-    - Retrieves data from `/data/${studentId}.json`. Returns 404 if that file or property doesn't exist.
-    - Should also retrieve nested properties: `curl http://localhost:1337/rn1abu8/courses/calculus`
-  - DELETE /:student-id/:propertyName(/:propertyName)
-    - Removes data from `/data/${studentId}.json`. Returns 404 if that file or 
-    property doesn't exist.
-    - Should also remove nested properties.
-- Tests
-  - Each endpoint should have its own test
+#### POST `/api/note`  
+   
+   Body: 
+   ```
+    {
+      "title": "this is title",
+      "content": "<p>This is content</p>"
+    }
+   ```
 
-## Instructions
+   Response:
 
-How to attempt this challenge:
+   HTTP Status: 200  
+   ```
+    {
+        "status": true,
+        "data": {
+            "_id": "5d0d0b91f37c11c7f013d056",
+            "title": "this is title",
+            "content": "<p>This is content</p>",
+            "updated_at": "2019-06-21T16:53:37.016Z",
+            "created_at": "2019-06-21T16:53:37.016Z",
+            "__v": 0
+        }
+    }
+   ```
 
-1) Create a new repo in your account and note the git url
-2) Clone this repo
-3) Solve the challenge
-4) Set your new repo as the origin: `git remote set-url origin ${your repo url}`
-5) Push your solution to your repo
+  #### GET `/api/note/:id`
 
-You must follow these steps for your solution to be accepted -- forks or other methods will not be considered.
+   Response:
+
+   HTTP Status: 200  
+   ```
+    {
+        "status": true,
+        "data": {
+            "_id": "5d0d0b91f37c11c7f013d056",
+            "title": "this is title",
+            "content": "<p>This is content</p>",
+            "updated_at": "2019-06-21T16:53:37.016Z",
+            "created_at": "2019-06-21T16:53:37.016Z",
+            "__v": 0
+        }
+    }
+   ```
+
+   HTTP Status: 401  
+
+   ```
+    {
+      "status": false,
+      "error": "Note doesn`t exist"
+    }
+   ``` 
+  #### GET `/api/note`
+
+   Response:
+
+   HTTP Status: 200  
+    {
+        "status": true,
+        "data": [
+            {
+                "_id": "5d0d0b91f37c11c7f013d056",
+                "title": "this is title",
+                "content": "<p>This is content</p>",
+                "updated_at": "2019-06-21T16:53:37.016Z",
+                "created_at": "2019-06-21T16:53:37.016Z",
+                "__v": 0
+            },
+            {
+                "_id": "5d0d0f67e5c9b8cd4548e9c0",
+                "title": "this is title",
+                "content": "<p>This is content</p>",
+                "updated_at": "2019-06-21T17:09:59.547Z",
+                "created_at": "2019-06-21T17:09:59.547Z",
+                "__v": 0
+            }
+        ]
+    }
+   ```
+
+   HTTP Status: 401  
+
+   ```
+    {
+      "status": false,
+      "error": "Note doesn`t exist"
+    }
+   ``` 
+   

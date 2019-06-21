@@ -18,19 +18,19 @@ const getAll = async(req, res) => {
 
   
 const get = async(req, res) => {
-  const data = await Note.find({_id :req.params.id});
-
-  if (!data) {
-    return res.status(401).json({
+  
+  Note.findOne({_id: req.params.id}) .then(data => {
+      res.send({
+        status: true,
+        data
+      }) 
+  })
+  .catch(e => {
+    return res.status(401).send({
       status: false,
       error: 'Note doesn`t exist'
     })
-  }
-
-  res.send({
-    status: true,
-    data
-  })
+  });
 }
 
 const create = async(req, res) => {
