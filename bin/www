@@ -6,7 +6,6 @@
 
 const app         = require('../app');
 
-const debug       = require('debug')('myapp:server');
 const http        = require('http');
 const mongoose = require('mongoose');
 
@@ -98,5 +97,4 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   console.log('App listening on', bind);
-  debug('Listening on ' + bind);
 }
