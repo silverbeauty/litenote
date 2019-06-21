@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.bf3c7429b74f7c96b84dc777ce8dd8a7.js"
+  "/precache-manifest.dce6f69b7640cace15ace5beaf66c87e.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "litenote-vue.js"});

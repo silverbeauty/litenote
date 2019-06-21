@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "8bbbf07a96f614a3849b681885be45bf",
-    "url": "/fonts/CircularStd-BoldItalic.otf"
+    "revision": "4fcdd97fadc3a1d9887f816f2aa67f1d",
+    "url": "/fonts/CircularStd-Medium.otf"
   },
   {
-    "revision": "1c6d31c9d9ee375077d7",
-    "url": "/js/app.d48879e3.js"
+    "revision": "06268bf2295bef81165c",
+    "url": "/js/app.3fd08995.js"
   },
   {
     "revision": "0618a07eef890a94ae79",
@@ -16,12 +16,16 @@ self.__precacheManifest = [
     "url": "/fonts/CircularStd-BookItalic.otf"
   },
   {
-    "revision": "5eb834381f5d92e046f85884a0fdaed9",
+    "revision": "a05871ff790d1977671d659990e62053",
     "url": "/index.html"
   },
   {
-    "revision": "4fcdd97fadc3a1d9887f816f2aa67f1d",
-    "url": "/fonts/CircularStd-Medium.otf"
+    "revision": "8a604ed5e935d80f28a6434813ca6ac3",
+    "url": "/fonts/Graphik-Bold.otf"
+  },
+  {
+    "revision": "6365c40aa59d462f1cc52ccce9635cb4",
+    "url": "/fonts/CircularStd-Book.otf"
   },
   {
     "revision": "99c54fc5e6f750bc0d849ccfbf8ab8cf",
@@ -32,20 +36,16 @@ self.__precacheManifest = [
     "url": "/fonts/Graphik-Regular.otf"
   },
   {
-    "revision": "4a127c955329def8ac32316e4c6b55a5",
-    "url": "/fonts/Graphik-Medium.otf"
-  },
-  {
-    "revision": "8a604ed5e935d80f28a6434813ca6ac3",
-    "url": "/fonts/Graphik-Bold.otf"
-  },
-  {
     "revision": "dcb304fd3cf40dbdd46bd67ccc43d6fd",
     "url": "/fonts/CircularStd-MediumItalic.otf"
   },
   {
-    "revision": "6365c40aa59d462f1cc52ccce9635cb4",
-    "url": "/fonts/CircularStd-Book.otf"
+    "revision": "4a127c955329def8ac32316e4c6b55a5",
+    "url": "/fonts/Graphik-Medium.otf"
+  },
+  {
+    "revision": "8bbbf07a96f614a3849b681885be45bf",
+    "url": "/fonts/CircularStd-BoldItalic.otf"
   },
   {
     "revision": "6baed2bf580964bec9559ad83caee43d",
