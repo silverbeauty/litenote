@@ -72,6 +72,7 @@
    Response:
 
    HTTP Status: 200  
+    ```
     {
         "status": true,
         "data": [
