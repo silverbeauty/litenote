@@ -1,25 +1,49 @@
 <template>
   <div class="mobile-container">
-    <v-progress-linear
-      color="#50E3C2"
-      height="5"
-      :value="data_progress"
-    ></v-progress-linear>
-
-    <div class="content">
-      <div>
-        <div class="main-title">Your Food is Being Prepared!</div>
-        <div class="sub-title">We'll call your name when your food is ready!</div>
-        <button class="btn-edit-order">Edit Order</button>
-      </div>
-    </div>    
+   <NoteItem v-for="(note, i) in notes" 
+            :key="i" 
+            :note="note"
+      />   
   </div> 
 </template>
 
 <script>
+  import Api from '../../api/api'
+  import NoteItem from '../shared/NoteItem'
 
+  export default {
+    name: 'Home',
+    components: {
+      NoteItem,
+    },
+
+    mounted: function() {
+
+      // Get Merchant data from API.
+      Api.getNoteList().then((data) => {
+        console.log('response:', data);
+         this.notes = data;
+      }).catch((error) => {
+        console.log("error: ", error);
+      })
+    },
+
+    beforeDestroy () {
+        clearInterval(this.interval)
+    },
+
+    methods: {
+      
+    },
+
+    watch: {
+    },
+
+    data: () => ({
+      notes: []
+    })
+  }
 </script>
-
 <style>
 
 </style>

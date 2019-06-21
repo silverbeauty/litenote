@@ -22,7 +22,7 @@
     "express": "^4.17.1",
     "mime": "^2.4.0",
     "mime-types": "^2.1.22",
-    "mongodb": "^3.2.3",
+    "mongodb": "^3.2.7",
     "mongoose": "^5.5.5",
     "morgan": "^1.9.1"
   }

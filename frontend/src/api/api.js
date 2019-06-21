@@ -13,7 +13,13 @@ const Api = {
       {
         headers: this._headers()
       }).then((response) => {
-        return this._responseData(response)
+        const {status, data} = response
+        if(status){
+          return this._responseData(data)
+        }else{
+          return this._responseError(e)
+        }
+        
       }).catch((e) => {
         console.log("e = ", e);
         return this._responseError(e)
@@ -69,6 +75,13 @@ const Api = {
 
     return Promise.resolve(data)
   },
+
+  _responseError (error) {
+    let e = new Error()
+    e.errors = error.response.errors
+
+    return Promise.reject(e)
+  }
 
 }
 

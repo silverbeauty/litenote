@@ -14,23 +14,20 @@ const mongoose = require('mongoose');
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '5000');
 app.set('port', port);
 
-const { DB_PORT } = require('../config/database');
+const { url } = require('../config/database');
 
-/**
- * Connect Monogo Database.
- */
- 
-mongoose.set('useCreateIndex', true)
-mongoose.connect(DB_PORT, {useNewUrlParser: true})
-.then(() => console.log('Connecting to database successful'))
-.catch(err => console.error('Could not connect to mongo DB', err))
+mongoose.connect(url, {
+    useNewUrlParser: true
+  }).then(() => {
+      console.log("Successfully connected to the database");
+  }).catch(err => {
+      console.log('Could not connect to the database. Exiting now...', err);
+  process.exit();
+  });
 
-/**
- * Create HTTP server.
- */
 
 var server = http.createServer(app);
 
