@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/fonts/CircularStd-BoldItalic.otf"
   },
   {
-    "revision": "565009247fcddc7b4422",
-    "url": "/js/app.765b4561.js"
+    "revision": "1c6d31c9d9ee375077d7",
+    "url": "/js/app.d48879e3.js"
   },
   {
     "revision": "0618a07eef890a94ae79",
@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/fonts/CircularStd-BookItalic.otf"
   },
   {
-    "revision": "7fa6c4c140e2f68ee47b8a52a4472d1e",
+    "revision": "5eb834381f5d92e046f85884a0fdaed9",
     "url": "/index.html"
   },
   {

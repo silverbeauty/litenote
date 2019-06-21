@@ -11,7 +11,7 @@ Vue.config.productionTip = false
 
 import Home from './components/pages/Home'
 import Edit from './components/pages/Edit'
-
+import Add from './components/pages/Add'
 
 //set vue routes
 const routes = [
@@ -24,6 +24,12 @@ const routes = [
         name: 'edit',
         path: '/edit',
         component: Edit,
+        props: true
+    },
+    {
+        name: 'add',
+        path: '/add',
+        component: Add,
         props: true
     }
 ]

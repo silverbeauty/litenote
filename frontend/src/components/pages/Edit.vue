@@ -1,6 +1,6 @@
 <template>
     <div class="mobile-container paddingbottom70">
-        <p>Test</p>
+        <p>Edit</p>
     </div>
 </template>
 

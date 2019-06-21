@@ -4,6 +4,9 @@
             :key="i" 
             :note="note"
       />   
+  <div class="col text-right">   
+    <base-button type="secondary" @click="moveCartPage()">Add</base-button>
+  </div>
   </div> 
 </template>
 
@@ -33,7 +36,10 @@
     },
 
     methods: {
-      
+      moveCartPage: function() {
+        this.$router.push({ name: 'add' });
+      },
+
     },
 
     watch: {
@@ -44,6 +50,6 @@
     })
   }
 </script>
-<style>
+<style lang="scss">
 
 </style>
