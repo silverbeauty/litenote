@@ -5,7 +5,7 @@
             :note="note"
       />   
   <div class="col text-right">   
-    <base-button type="secondary" @click="moveCartPage()">Add</base-button>
+    <button type="secondary" @click="moveCartPage()">Add</button>
   </div>
   </div> 
 </template>
@@ -21,7 +21,6 @@
     },
 
     mounted: function() {
-
       // Get Merchant data from API.
       Api.getNoteList().then((data) => {
         console.log('response:', data);
@@ -30,21 +29,16 @@
         console.log("error: ", error);
       })
     },
-
     beforeDestroy () {
         clearInterval(this.interval)
     },
-
     methods: {
       moveCartPage: function() {
         this.$router.push({ name: 'add' });
-      },
-
+      }
     },
-
     watch: {
     },
-
     data: () => ({
       notes: []
     })

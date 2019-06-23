@@ -153,4 +153,9 @@
       height: 100vh;
       z-index: 10;
   }
+
+  .container .content {
+    display: none;
+    padding : 5px;
+}
 }

@@ -4,9 +4,27 @@ import './plugins/vuetify'
 import App from './App.vue'
 import VueRouter from 'vue-router';
 import store from './store';
+import Quill from "quill";
+import QuillEditor from "./components/shared/QuillEditor.vue";
+
+const version = "__VERSION__";
+
+// Declare install function executed by Vue.use()
+export function install(Vue) {
+  if (install.installed) return;
+  install.installed = true;
+
+  Vue.component("VueEditor", QuillEditor);
+}
+
+const NoteEditor = {
+  install,
+  version,
+  Quill
+};
 
 Vue.use(VueRouter)
-
+Vue.use(NoteEditor)
 Vue.config.productionTip = false
 
 import Home from './components/pages/Home'
