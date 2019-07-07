@@ -164,7 +164,7 @@ export default {
               if(this.start_paragraphs){
                 const date = moment().format('MM/DD/YYYY')
                 const day = DAYS[moment().weekday()]
-                this.paragraphs+=`<div class="bg-lightGray start-embed" contenteditable="false">${date} - ${day}</div>`
+                this.paragraphs=`<div class="bg-lightGray start-embed" contenteditable="false">${date} - ${day}</div>`
                 node.parentNode.classList.add('bg-lightGray')
                 node.parentNode.setAttribute('contenteditable', 'false')
                 this.paragraphs+= node.parentNode.outerHTML
@@ -183,7 +183,6 @@ export default {
                   node.setAttribute('contenteditable', 'true')
                   this.is_paragraphs = false
                   Api.createEmbed(this.paragraphs_title, this.paragraphs, this.$store.state.note.note_id)
-                  this.paragraphs = ""
                 }else{
                   node.parentNode.classList.add('bg-lightGray')
                   node.parentNode.setAttribute('contenteditable', 'false')
