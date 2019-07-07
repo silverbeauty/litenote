@@ -6,7 +6,7 @@
     <div class="add-page-container slide-effect">
     <div class="header">
       <div class="title">
-        <input v-model="note.title" autofocus />
+        <input v-model="note.title" ref="title" autofocus/>
       </div>
       <div class="tab-bar">
         <div class="drop-down"  @click="dropToggle()" 
@@ -60,7 +60,9 @@
         <button class="ql-line">
           <img src="images/icon-line.svg" class="icon" data="line" />
         </button>
-        <button class="ql-link"></button>
+        <button class="ql-embed" @click="moveEmbedPage()">
+           <img src="images/icon-embed.svg" class="icon" data="embed" />
+        </button>
         <button class="ql-color color-red" value="#f4001e"></button>
         <button class="ql-color color-yellow" value="#f5bb23"></button>
         <button class="ql-color color-green" value="#50e3c2"></button>
@@ -98,6 +100,7 @@ export default {
   async mounted(){
      $('.curtain').addClass('active')
      $('.add-page-container').addClass('open');
+     this.$refs.title.focus();
      this.$store.state.note.note_id =  Api.addNote({
           title: "",
           content: ""
@@ -125,6 +128,10 @@ export default {
       }, 300)
     },
 
+    moveEmbedPage: function(){
+      this.$router.push({ name: 'embed' });
+    },
+
     addTab: function(){
       if(this.note.has_tabs == false){
         const content = $(".ql-editor").html()
@@ -138,9 +145,10 @@ export default {
         title: "untitled",
         content: ""
       })
-      this.selected_tab = 1
+       this.selected_tab +=1
       this.content = ""
       setTimeout(()=>{
+         $(".tab .tab-links").removeClass("active")
         document.querySelectorAll(".tab .tab-links")[this.selected_tab].classList.add("active")
       }, 10)
     },
@@ -269,11 +277,13 @@ export default {
         list-style: none;
         font-size: 13px;
         width: 50px;
+        cursor: pointer;
+       user-select: none;
       }
   }
 
   .ios{
-    margin-top: 4px;
+    margin-top: 5px;
     width: 20px;
     height: 15px;
   }
@@ -287,12 +297,9 @@ export default {
 }
 .tab{
   display: flex;
-  margin: 1px;
   height: 37px;
   overflow-x: auto;
   border: 1px solid #eeeeee;
-  border-right: 0px;
-  border-left: none;
 
   .tab-links{
     display: block;

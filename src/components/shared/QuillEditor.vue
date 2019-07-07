@@ -107,7 +107,6 @@ export default {
 
   mounted() {
     let icons = Quill.import('ui/icons');
-    icons['link'] = '<img src="images/icon-embed.svg" class="icon" data-icon="embed" />';
     icons['image'] = '<img src="images/icon-camera.svg" class="icon" data-icon="camera" />';
     icons['bold'] = '<img src="images/icon-bold.svg" class="icon" data-icon="bold" />';
     icons['italic'] = '<img src="images/icon-italic.svg" class="icon" data-icon="italic" />';
@@ -305,7 +304,6 @@ export default {
             }
           }
             
-
           if(typeof className === 'undefined'){
             while(typeof $(tree).next().attr('class') !== 'undefined'){
               if(typeof $(tree).next().attr('class') !== 'undefined'){

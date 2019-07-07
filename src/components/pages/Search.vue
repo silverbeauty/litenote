@@ -60,13 +60,13 @@
 #my-toolbar{
   white-space: nowrap;
 
-  .icon{
-    margin: 0px 2px;
+    .icon{
+      margin: 0px 2px;
+    }
   }
-}
-.ql-toolbar{
-  display: none;
-}
+  .ql-toolbar{
+    display: none;
+  }
   .search-bar{  
     display: flex;
     justify-content: space-around;
@@ -74,5 +74,4 @@
   .search-key{
     background-color:#a7f0e0;
   }
-
 </style>

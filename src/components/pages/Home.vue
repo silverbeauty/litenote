@@ -55,7 +55,6 @@
           const search_key = this.search_key
           this.$router.push({ name: 'search', params: {'content': content, 'search_key': search_key} })
         }
-        
       },
       mobileCheck: function(){
         let check = false;

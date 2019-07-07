@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="23px" viewBox="0 0 27 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group 4</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Final" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Main-Tab" transform="translate(-298.000000, -777.000000)" fill-rule="nonzero">
+            <g id="Group-5" transform="translate(0.000000, 766.000000)">
+                <g id="Group-4" transform="translate(298.000000, 12.000000)">
+                    <ellipse id="Oval" fill="#000000" cx="13.5652174" cy="10.4210526" rx="3.39130435" ry="3.47368421"></ellipse>
+                    <path d="M19.3607745,15.4641279 C20.6648867,14.1980069 21.4782609,12.406824 21.4782609,10.4210526 C21.4782609,8.55687608 20.7614477,6.86418711 19.5947446,5.61639292" id="Oval" stroke="#000000" stroke-width="1.575" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M5.79555706,15.4641279 C7.0996693,14.1980069 7.91304348,12.406824 7.91304348,10.4210526 C7.91304348,8.55687608 7.19623032,6.86418711 6.02952723,5.61639292" id="Oval" stroke="#000000" stroke-width="1.575" stroke-linecap="round" stroke-linejoin="round" transform="translate(6.854300, 10.540260) scale(-1, 1) translate(-6.854300, -10.540260) "></path>
+                    <path d="M20.1672088,21.2164479 C23.6708509,18.9636689 26,14.970969 26,10.4210526 C26,6.34574796 24.1314246,2.71747397 21.2239769,0.386088299" id="Oval" stroke="#000000" stroke-width="1.575" stroke-linecap="round"></path>
+                    <path d="M0.94981751,21.2164479 C4.45345963,18.9636689 6.7826087,14.970969 6.7826087,10.4210526 C6.7826087,6.34574796 4.91403334,2.71747397 2.00658555,0.386088299" id="Oval" stroke="#000000" stroke-width="1.575" stroke-linecap="round" transform="translate(3.866213, 10.801268) scale(-1, 1) translate(-3.866213, -10.801268) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

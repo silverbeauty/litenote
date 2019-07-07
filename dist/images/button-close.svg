@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="79px" height="79px" viewBox="0 0 79 79" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>Group 6</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="23.5" cy="23.5" r="23.5"></circle>
+        <filter x="-53.2%" y="-48.9%" width="206.4%" height="206.4%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="8" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.244536713 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Note" transform="translate(-295.000000, -727.000000)">
+            <g id="Group-6" transform="translate(311.000000, 741.000000)">
+                <g id="Oval">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <path d="M31.8925573,22.6690305 C32.1189851,22.6690305 32.3114459,22.7491067 32.4699453,22.9092615 C32.6284448,23.0694163 32.7076933,23.2638871 32.7076933,23.4926796 C32.7076933,23.7214722 32.6284448,23.915943 32.4699453,24.0760978 C32.3114459,24.2362526 32.1189851,24.3163288 31.8925573,24.3163288 L24.6921895,24.3163288 L24.6921895,31.4546215 C24.6921895,31.6681612 24.6129409,31.8588189 24.4544415,32.0266001 C24.295942,32.1943813 24.1034813,32.2782707 23.8770535,32.2782707 C23.6506257,32.2782707 23.4581649,32.1943813 23.2996655,32.0266001 C23.141166,31.8588189 23.0619175,31.6681612 23.0619175,31.4546215 L23.0619175,24.3163288 L15.9974056,24.3163288 C15.786073,24.3163288 15.597386,24.2362526 15.4313389,24.0760978 C15.2652919,23.915943 15.1822696,23.7214722 15.1822696,23.4926796 C15.1822696,23.2638871 15.2652919,23.0694163 15.4313389,22.9092615 C15.597386,22.7491067 15.786073,22.6690305 15.9974056,22.6690305 L23.0619175,22.6690305 L23.0619175,15.5764961 C23.0619175,15.3477035 23.141166,15.1532327 23.2996655,14.9930779 C23.4581649,14.8329231 23.6506257,14.7528469 23.8770535,14.7528469 C24.1034813,14.7528469 24.295942,14.8329231 24.4544415,14.9930779 C24.6129409,15.1532327 24.6921895,15.3477035 24.6921895,15.5764961 L24.6921895,22.6690305 L31.8925573,22.6690305 Z" id="" fill="#000000" fill-rule="nonzero" transform="translate(23.944981, 23.515559) rotate(45.000000) translate(-23.944981, -23.515559) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

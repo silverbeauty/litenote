@@ -25,5 +25,7 @@
   padding: 10px 5px;
   max-height: 100px;
   overflow-y: hidden;
+  cursor: pointer;
+  user-select: none;
 }
 </style>

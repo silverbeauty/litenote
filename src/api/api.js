@@ -18,13 +18,7 @@ firebase.firestore().enablePersistence()
   .catch(function(err) {
     console.log('err', err)
       if (err.code == 'failed-precondition') {
-          // Multiple tabs open, persistence can only be enabled
-          // in one tab at a a time.
-          // ...
       } else if (err.code == 'unimplemented') {
-          // The current browser does not support all of the
-          // features required to enable persistence
-          // ...
       }
   })
   firebase.firestore().disableNetwork().then()
@@ -65,17 +59,6 @@ const Api = {
     let id = newCityRef.id;
     newCityRef.set(data);
     return id;
-    // return new Promise((resolve, reject) =>{
-    //   db.collection("notes").add({
-    //     ...data,
-    //     created_at: new Date(),
-    //      updated_at: new Date() 
-    //   })
-    //   .then(function(docRef) {
-    //       console.log("Document written with ID: ", docRef.id);
-    //       resolve(docRef.id)
-    //   })
-    // })
   },
 
   removeNote(index){
@@ -87,24 +70,34 @@ const Api = {
     });
   },
 
+  getEmbedList(){
+    let db = firebase.firestore();
+    let data = []
+    return new Promise((resolve, reject) =>{
+      db.collection("embed").orderBy('created_at', 'desc')
+      .get().then(function(snapshot) {
+        snapshot.forEach(function(doc) {
+          const note = doc.data()
+          note['index'] = doc.id
+          data.push(note);
+        });
+        resolve(data)
+      })
+    })
+  },
+
   createEmbed(title, content, note_id){
- 
     let db = firebase.firestore();
 
     let embedRef = db.collection("embed").doc();
     let embedId = embedRef.id;
     embedRef.set({
+        title: title,
         content: content,
         note_id: note_id,
-        create_at: new Date()
+        created_at: new Date()
     });
 
-    // db.collection("embed").add({
-    //     content: content,
-    //     note_id: note_id,
-    //     updated_at: new Date()
-    // })
-    // .then(function(docRef) {
         db.collection("notes").where("title", "==", title).get().then(function(snapshot) {
           if (snapshot.docs.length > 0) {
               let references = snapshot.docs[0].data().references
@@ -135,17 +128,11 @@ const Api = {
             .catch(function(error) {
                 console.error("Error adding document: ", error);
             });
-              // doc.data() will be undefined in this case
               console.log("No such document!");
           }
         }).catch(function(error) {
             console.log("Error getting document:", error);
         });  
-    // })
-    // .catch(function(error) {
-    //     console.error("Error adding document: ", error);
-    //     return;
-    // });
   },
 
   getEmbed (index) {
