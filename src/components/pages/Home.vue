@@ -93,8 +93,8 @@
                 for(let j =0; j< note_item.querySelectorAll("div").length; j++){
                   if($(note_item.querySelectorAll("div")[j]).text().toLowerCase().indexOf(val.toLowerCase())>-1){
                     total_found +=1
-                    $(note_item.querySelectorAll("div")[j].parentNode.parentNode).removeClass("filtered")
-                    $(note_item.querySelectorAll("div")[j].parentNode.parentNode).addClass("searched")
+                    $(note_item.querySelectorAll("div")[j].parentNode).removeClass("filtered")
+                    $(note_item.querySelectorAll("div")[j].parentNode).addClass("searched")
                     break;
                   }
                 }
@@ -105,11 +105,11 @@
           }else{
               document.querySelectorAll(".note-item div").forEach(element =>{
               if($(element).text().toLowerCase().indexOf(val.toLowerCase())>-1){
-               $(element.parentNode.parentNode).addClass("searched")
-                $(element.parentNode.parentNode).removeClass("filtered")
+               $(element.parentNode).addClass("searched")
+                $(element.parentNode).removeClass("filtered")
               }else{
-               $(element.parentNode.parentNode).addClass("filtered")
-               $(element.parentNode.parentNode).removeClass("searched")
+               $(element.parentNode).addClass("filtered")
+               $(element.parentNode).removeClass("searched")
               }
             })
             $(".search-total").remove()
@@ -123,8 +123,8 @@
                   $(".search-total").remove()
                   for(let i =0; document.querySelectorAll(".note-item div").length; i ++){
                     if($(document.querySelectorAll(".note-item div")[i]).text().toLowerCase().indexOf(val.toLowerCase())>-1){
-                      $( document.querySelectorAll(".note-item div")[i].parentNode.parentNode).removeClass("filtered")
-                      $(document.querySelectorAll(".note-item div")[i].parentNode.parentNode).addClass("searched")
+                      $( document.querySelectorAll(".note-item div")[i].parentNode).removeClass("filtered")
+                      $(document.querySelectorAll(".note-item div")[i].parentNode).addClass("searched")
                       break
                     }
                   }

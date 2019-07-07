@@ -179,6 +179,7 @@ export default {
                   this.paragraphs+= node.outerHTML
                   node.classList.remove('bg-lightGray')
                   node.classList.remove('end-embed')
+                  node.removeAttribute("class");
                   node.setAttribute('contenteditable', 'true')
                   this.is_paragraphs = false
                   Api.createEmbed(this.paragraphs_title, this.paragraphs, this.$store.state.note.note_id)
