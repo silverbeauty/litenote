@@ -182,6 +182,7 @@ export default {
                   node.removeAttribute("class");
                   node.setAttribute('contenteditable', 'true')
                   this.is_paragraphs = false
+                  this.paragraphs = ""
                   Api.createEmbed(this.paragraphs_title, this.paragraphs, this.$store.state.note.note_id)
                 }else{
                   node.parentNode.classList.add('bg-lightGray')
