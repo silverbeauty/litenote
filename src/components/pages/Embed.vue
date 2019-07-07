@@ -97,8 +97,8 @@
                 for(let j =0; j< embed_item.querySelectorAll("div").length; j++){
                   if($(embed_item.querySelectorAll("div")[j]).text().toLowerCase().indexOf(val.toLowerCase())>-1){
                     total_found +=1
-                    $(embed_item.querySelectorAll("div")[j].parentNode.parentNode).removeClass("filtered")
-                    $(embed_item.querySelectorAll("div")[j].parentNode.parentNode).addClass("searched")
+                    $(embed_item.querySelectorAll("div")[j].parentNode).removeClass("filtered")
+                    $(embed_item.querySelectorAll("div")[j].parentNode).addClass("searched")
                     break;
                   }
                 }
@@ -109,11 +109,11 @@
           }else{
               document.querySelectorAll(".embed-item div").forEach(element =>{
               if($(element).text().toLowerCase().indexOf(val.toLowerCase())>-1){
-               $(element.parentNode.parentNode).addClass("searched")
-                $(element.parentNode.parentNode).removeClass("filtered")
+               $(element.parentNode).addClass("searched")
+                $(element.parentNode).removeClass("filtered")
               }else{
-               $(element.parentNode.parentNode).addClass("filtered")
-               $(element.parentNode.parentNode).removeClass("searched")
+               $(element.parentNode).addClass("filtered")
+               $(element.parentNode).removeClass("searched")
               }
             })
             $(".search-total").remove()
@@ -127,8 +127,8 @@
                   $(".search-total").remove()
                   for(let i =0; document.querySelectorAll(".embed-item div").length; i ++){
                     if($(document.querySelectorAll(".embed-item div")[i]).text().toLowerCase().indexOf(val.toLowerCase())>-1){
-                      $( document.querySelectorAll(".embed-item div")[i].parentNode.parentNode).removeClass("filtered")
-                      $(document.querySelectorAll(".embed-item div")[i].parentNode.parentNode).addClass("searched")
+                      $(document.querySelectorAll(".embed-item div")[i].parentNode).removeClass("filtered")
+                      $(document.querySelectorAll(".embed-item div")[i].parentNode).addClass("searched")
                       break
                     }
                   }
