@@ -19,8 +19,8 @@
     },
     props: {
         content: {
-          default: "",
-          type: String
+          default: {},
+          type: Object
         },
         search_key: {
           default: "",
@@ -37,21 +37,20 @@
         }
       },
     },
-
     mounted: function() {
       if(this.search_key != ""){
-        this.note.content = $(".ql-editor").html().replace(new RegExp(this.search_key, 'i'), '<span class="search-key">'+this.search_key+'</span>')
+        this.note.content = $(".ql-editor").html().replace(new RegExp(this.search_key, 'gi'), (match) => {
+            return '<span class="search-key">'+match+'</span>'})
       }
     },
-
     methods: {
-        moveHomePage: function(){
+      moveHomePage: function(){
         $('.curtain').removeClass('active')
         $('#quill-container').removeClass('open')
         setTimeout(()=>{
             this.$router.push({ name: 'home' });
         }, 300)
-        }
+      }
     }
   }
 </script>

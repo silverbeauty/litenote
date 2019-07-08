@@ -39,6 +39,7 @@
       v-model="html_content"
       use-markdown-shortcuts
       :editor-options="editorOptions"
+      :updateContent="updateContent"
     >
       <div id="my-toolbar" slot="toolbar">
         <button class="ql-image"></button>
@@ -116,19 +117,24 @@
      $('.curtain').addClass('active')
      $('.add-page-container').addClass('open')
     
-     if(typeof this.note.references !='undefined'){
+     if(typeof this.note.references !='undefined'){ 
       for(let i =0; i<this.note.references.length; i ++){
-          if(this.note.references[i].type = 'embed'){
+          if(this.note.references[i].type = 'embed'){ 
             const embed = await Api.getEmbed(this.note.references[i].ref)
             this.note.content = this.note.content.replace(new RegExp(`<div class="embed-ref" emb-ref="${this.note.references[i].ref}"></div>`), 
                 `${embed.content}`) 
           }
         }
      }
-      this.html_content = this.note.content
- 
+     this.html_content = this.note.content
     },
     methods: {
+      updateContent(data) {
+        this.note = data.content
+        this.index = data.index
+        this.html_content = data.content.content
+        
+      },
       moveHomePage: async function(){
           $('.curtain').removeClass('active')
           $('#quill-container').removeClass('open')
@@ -150,6 +156,7 @@
       },
 
       moveEmbedPage: function(){
+        this.html_content = ""
         $('.curtain').removeClass('active')
         $('#quill-container').removeClass('open')
         setTimeout(()=>{

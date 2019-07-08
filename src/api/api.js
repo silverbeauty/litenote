@@ -28,6 +28,18 @@ const Api = {
     this.store = 1
   },
   
+  getNote (index) {
+    firebase.firestore().disableNetwork()
+    let db = firebase.firestore();
+    return new Promise((resolve, reject) =>{
+      db.collection("notes").doc(index).get().then(function(snapshot){
+        const note = snapshot.data()
+        note['index'] = snapshot.id
+        resolve(note)      
+      })
+    })
+  },
+
   getNoteList () {
  
     let db = firebase.firestore();
@@ -86,14 +98,13 @@ const Api = {
     })
   },
 
-  createEmbed(title, content, note_id){
+  createEmbed(title, note_id){
     let db = firebase.firestore();
 
     let embedRef = db.collection("embed").doc();
     let embedId = embedRef.id;
     embedRef.set({
         title: title,
-        content: content,
         note_id: note_id,
         created_at: new Date()
     });
@@ -110,8 +121,7 @@ const Api = {
                 references: references,
                 updated_at: new Date()
               });
-    
-          } else {
+          } else{
             db.collection("notes").add({
                 content: `<div class="embed-ref" emb-ref="${embedId}"></div>`,
                 title: title,
@@ -133,6 +143,14 @@ const Api = {
         }).catch(function(error) {
             console.log("Error getting document:", error);
         });  
+        return embedId;
+  },
+
+  updateEmbed(index, content) {
+    let db = firebase.firestore();
+    db.collection("embed").doc(index).update({
+      content: content
+    });
   },
 
   getEmbed (index) {

@@ -82,15 +82,18 @@ export default {
     useMarkdownShortcuts: {
       type: Boolean,
       default: false
-    }
+    },
+    updateContent: { type: Function },
   },
 
   data: () => ({
     quill: null,
     is_paragraphs: false,
     paragraphs_title: "",
+    paragraphs_id: "",
     paragraphs: "",
-    note_id: ""
+    note_id: "",
+    init: false,
   }),
  
   watch: {
@@ -153,24 +156,27 @@ export default {
           handler: (range, context)=>{
             const selection = document.getSelection()
             const node = selection.getRangeAt(0).commonAncestorContainer
-            const tree = node
-            if($(tree.parentNode).prop("tagName") == 'DIV' && $(tree.parentNode).prop("className") != 'ql-editor'){
-                $(tree.parentNode).removeAttr('class')
+            if($(node.parentNode).prop("tagName") == 'DIV' && !$(node.parentNode).hasClass('ql-editor')){
+                $(node.parentNode).removeAttr('class')
                 this.quill.insertText(this.quill.getSelection(), '\n');
               }else{
                 this.quill.insertText(this.quill.getSelection(), '\n');
             }  
             if(this.is_paragraphs == true){
               if(this.start_paragraphs){
+                this.paragraphs_id = Api.createEmbed(this.paragraphs_title, this.$store.state.note.note_id)
+                this.start_paragraphs = false
                 const date = moment().format('MM/DD/YYYY')
-                const day = DAYS[moment().weekday()]
-                this.paragraphs=`<div class="bg-lightGray start-embed" contenteditable="false">${date} - ${day}</div>`
+                this.paragraphs=`<div class="bg-lightGray start-embed" emb-ref="${this.paragraphs_id}" contenteditable="false">${date} - ${this.paragraphs_title}</div>`
+                node.parentNode.classList.add('start-ref')
                 node.parentNode.classList.add('bg-lightGray')
                 node.parentNode.setAttribute('contenteditable', 'false')
                 this.paragraphs+= node.parentNode.outerHTML
                 node.parentNode.classList.remove('bg-lightGray')
                 node.parentNode.setAttribute('contenteditable', 'true')
-                this.start_paragraphs = false
+                node.parentNode.setAttribute('emb-ref', this.paragraphs_id)
+                node.parentNode.classList.add('embed')
+                
               }else{
                 if(node.innerHTML == '<br>'){
                   node.classList.add('bg-lightGray')
@@ -179,16 +185,18 @@ export default {
                   this.paragraphs+= node.outerHTML
                   node.classList.remove('bg-lightGray')
                   node.classList.remove('end-embed')
-                  node.removeAttribute("class");
-                  node.setAttribute('contenteditable', 'true')
+                  node.classList.add('end-ref')
                   this.is_paragraphs = false
-                  Api.createEmbed(this.paragraphs_title, this.paragraphs, this.$store.state.note.note_id)
+                  node.setAttribute('contenteditable', 'true')
+                  Api.updateEmbed(this.paragraphs_id, this.paragraphs)
+                  this.paragraphs = ""
                 }else{
                   node.parentNode.classList.add('bg-lightGray')
                   node.parentNode.setAttribute('contenteditable', 'false')
                   this.paragraphs+= node.parentNode.outerHTML
                   node.parentNode.classList.remove('bg-lightGray')
                   node.parentNode.setAttribute('contenteditable', 'true')
+                  node.parentNode.classList.add('embed')
                 }
               }
             } 
@@ -255,16 +263,26 @@ export default {
     },
 
     handleSelectionChange(range, oldRange) {
-
       if (!range && oldRange) this.$emit("blur", this.quill);
       else if (range && !oldRange) this.$emit("focus", this.quill);
 
+
       if(this.$store.state.note.is_mobile){
        $( "#quill-container .ql-editor div" ).unbind( "click")
-       $( "#quill-container .ql-editor div" ).bind( "click",  function(e){
+       $( "#quill-container .ql-editor div" ).bind( "click",  async(e)=>{
           e.preventDefault();  
-          let tree = this
+          let tree = e.currentTarget
+          if($(tree).hasClass("bg-lightGray")){
+            while(!$(tree).hasClass('start-embed')){
+              tree = tree.previousSibling
+            }
+            let embRef = await Api.getEmbed(tree.getAttribute("emb-ref")).then()
+            let note = await Api.getNote(embRef.note_id).then();
 
+            let data = {'content': note, 'index': note['index']};
+            this.updateContent(data);
+               
+          }
           if($(tree).next().prop("tagName")=='UL' || $(tree).next().prop("tagName")=='LI'){
             $(tree).next().toggle();
             if($(tree).next().css('display') == 'none'){
@@ -378,10 +396,19 @@ export default {
         });
       }else{
        $( "#quill-container .ql-editor div" ).unbind( "dblclick")
-       $( "#quill-container .ql-editor div" ).bind( "dblclick",  function(e){
+       $( "#quill-container .ql-editor div" ).bind( "dblclick",  async(e)=>{
           e.preventDefault();  
-          let tree = this
+          let tree = e.currentTarget
+          if($(tree).hasClass("bg-lightGray")){
+            while(!$(tree).hasClass('start-embed')){
+              tree = tree.previousSibling
+            }
+            let embRef = await Api.getEmbed(tree.getAttribute("emb-ref")).then()
+            let note = await Api.getNote(embRef.note_id).then();
 
+            let data = {'content': note, 'index': note['index']};
+            this.updateContent(data);
+          }
           if($(tree).next().prop("tagName")=='UL' || $(tree).next().prop("tagName")=='LI'){
             $(tree).next().toggle();
             if($(tree).next().css('display') == 'none'){
@@ -495,14 +522,29 @@ export default {
       }     
     },
     handleTextChange() {
-     
        const selection = document.getSelection()
        if(selection.anchorNode != null){
           $(".auto-action").remove()
           $(".auto-notebook").remove()
           const node = selection.getRangeAt(0).commonAncestorContainer
-          const tree = node.parentNode
-          if($(tree).prop("tagName") == 'DIV' && typeof $(tree).attr("class") == 'undefined'){
+          let tree = node.parentNode  
+          if($(tree).hasClass('embed')){
+            this.paragraphs = tree.outerHTML
+            do{
+              tree = tree.previousSibling                
+              this.paragraphs = tree.outerHTML + this.paragraphs
+            }while(!$(tree).hasClass('start-ref'))
+            
+            this.paragraphs_id = $(tree).attr('emb-ref')
+            tree = node.parentNode 
+            
+            while(!$(tree).hasClass('end-ref') && tree != null){ 
+               this.paragraphs = this.paragraphs + tree.outerHTML
+               tree = tree.nextSibling
+            }
+            Api.updateEmbed(this.paragraphs_id, this.paragraphs)
+            
+          }else if($(tree).prop("tagName") == 'DIV' && typeof $(tree).attr("class") == 'undefined'){
              let match_actions = []
              for(let i=0, j=0; i<actions.length; i++){
                 if(actions[i].toLowerCase().indexOf(tree.innerText.toLowerCase()) == 0){
