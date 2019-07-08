@@ -98,7 +98,7 @@ export default {
  
   watch: {
     value(val) {
-      if (val != this.quill.root.innerHTML && !this.quill.hasFocus()) {
+      if (val != this.quill.root.innerHTML) {
         this.quill.root.innerHTML = val;
       }
     },
