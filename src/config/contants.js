@@ -1,4 +1,4 @@
-export const actions = [
+export const ACTIONS = [
     "Actionable",
     "action",
     "add",
@@ -20,7 +20,7 @@ export const actions = [
     "Reflection"
 ];
 
-export const notebooks = [
+export const NOTEBOOKS = [
     {key: 0,
      name: "DEXTER",
      hit_count: 0,
@@ -65,7 +65,7 @@ export const notebooks = [
    }
 ]
 
-export const paragraphs=[
+export const EMBED=[
     'Actionable',
     'Envision',
     'Idea',

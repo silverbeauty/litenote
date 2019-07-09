@@ -19,29 +19,12 @@
 
 <script>
 import Quill from "quill";
-import defaultToolbar from "@/helpers/default-toolbar";
 import oldApi from "@/helpers/old-api";
 import mergeDeep from "@/helpers/merge-deep";
 import MarkdownShortcuts from "@/helpers/markdown-shortcuts";
 import moment from 'moment';
 import Api from '../../api/api';
-import { actions, notebooks, paragraphs, DAYS } from '../../config/contants';
-let Inline = Quill.import('blots/inline');
-let Block = Quill.import('blots/block');
-Block.tagName = 'DIV';
-Quill.register(Block, true);
-
-class  SpanTagInline extends Inline {
-
-  formats() {
-    const tagName = 'span'
-    return tagName
-  }
-}
-
-
-Quill.register(SpanTagInline)
-
+import { ACTIONS, NOTEBOOKS, EMBED, DAYS } from '../../config/contants';
 
 export default {
   name: "VueEditor",
@@ -93,13 +76,14 @@ export default {
     paragraphs_id: "",
     paragraphs: "",
     note_id: "",
-    init: false,
+    update_content: false,
   }),
  
   watch: {
     value(val) {
-      if (val != this.quill.root.innerHTML) {
-        this.quill.root.innerHTML = val;
+      if (this.update_content || (val != this.quill.root.innerHTML && !this.quill.hasFocus())) {
+        this.quill.root.innerHTML = val
+        this.update_content = false
       }
     },
 
@@ -109,17 +93,9 @@ export default {
   },
 
   mounted() {
-    let icons = Quill.import('ui/icons');
-    icons['image'] = '<img src="images/icon-camera.svg" class="icon" data-icon="camera" />';
-    icons['bold'] = '<img src="images/icon-bold.svg" class="icon" data-icon="bold" />';
-    icons['italic'] = '<img src="images/icon-italic.svg" class="icon" data-icon="italic" />';
-    icons['underline'] = '<img src="images/icon-underline.svg" class="icon" data-icon="underline" />';
-    icons['list']['bullet'] = '<img src="images/icon-list.svg" class="icon" data-icon="bullet" />';
-    icons['indent']['+1'] = '<img src="images/icon-indent.svg" class="icon" data-icon="indent" />';
-    icons['color'] = '<span class="icon" data-icon="color"></span>';
     this.registerPrototypes();
     this.initializeEditor();
-    this.$store.state.note.notebooks = notebooks
+    this.$store.state.note.notebooks = NOTEBOOKS
   },
 
   beforeDestroy() {
@@ -145,6 +121,28 @@ export default {
         placeholder: this.placeholder ? this.placeholder : "",
       };
 
+      let Block = Quill.import('blots/block');
+      Block.tagName = 'DIV';
+      Quill.register(Block, true);
+
+      let Inline = Quill.import('blots/inline');
+      class  SpanTagInline extends Inline {
+        formats() {
+          const tagName = 'span'
+          return tagName
+        }
+      }
+      Quill.register(SpanTagInline)
+
+      let icons = Quill.import('ui/icons');
+      icons['image'] = '<img src="images/icon-camera.svg" class="icon" data-icon="camera" />';
+      icons['bold'] = '<img src="images/icon-bold.svg" class="icon" data-icon="bold" />';
+      icons['italic'] = '<img src="images/icon-italic.svg" class="icon" data-icon="italic" />';
+      icons['underline'] = '<img src="images/icon-underline.svg" class="icon" data-icon="underline" />';
+      icons['list']['bullet'] = '<img src="images/icon-list.svg" class="icon" data-icon="bullet" />';
+      icons['indent']['+1'] = '<img src="images/icon-indent.svg" class="icon" data-icon="indent" />';
+      icons['color'] = '<span class="icon" data-icon="color"></span>';
+
       this.prepareEditorConfig(editorConfig);
       this.quill = new Quill(this.$refs.quillContainer, editorConfig);
     },
@@ -153,15 +151,16 @@ export default {
       let bindings = {
         list: {
           key: 'enter',
-          handler: (range, context)=>{
+          handler: (range, context) => {
             const selection = document.getSelection()
             const node = selection.getRangeAt(0).commonAncestorContainer
+            
             if($(node.parentNode).prop("tagName") == 'DIV' && !$(node.parentNode).hasClass('ql-editor')){
-                $(node.parentNode).removeAttr('class')
-                this.quill.insertText(this.quill.getSelection(), '\n');
-              }else{
-                this.quill.insertText(this.quill.getSelection(), '\n');
-            }  
+              $(node.parentNode).removeAttr('class')
+              this.quill.insertText(this.quill.getSelection(), '\n');
+            }else{
+              this.quill.insertText(this.quill.getSelection(), '\n');
+            }
             if(this.is_paragraphs == true){
               if(this.start_paragraphs){
                 this.paragraphs_id = Api.createEmbed(this.paragraphs_title, this.$store.state.note.note_id)
@@ -176,16 +175,16 @@ export default {
                 node.parentNode.setAttribute('contenteditable', 'true')
                 node.parentNode.setAttribute('emb-ref', this.paragraphs_id)
                 node.parentNode.classList.add('embed')
-                
               }else{
                 if(node.innerHTML == '<br>'){
-                  node.classList.add('bg-lightGray')
-                  node.classList.add('end-embed')
-                  node.setAttribute('contenteditable', 'false')
-                  this.paragraphs+= node.outerHTML
-                  node.classList.remove('bg-lightGray')
-                  node.classList.remove('end-embed')
-                  node.classList.add('end-ref')
+                  node.previousSibling.classList.add('bg-lightGray')
+                  node.previousSibling.classList.add('end-embed')
+                  node.previousSibling.classList.add('end-ref')
+                  node.previousSibling.classList.add('embed')
+                  node.previousSibling.setAttribute('contenteditable', 'false')
+                  this.paragraphs+= node.previousSibling.outerHTML
+                  node.previousSibling.classList.remove('bg-lightGray')
+                  node.previousSibling.classList.remove('end-embed')
                   this.is_paragraphs = false
                   node.setAttribute('contenteditable', 'true')
                   Api.updateEmbed(this.paragraphs_id, this.paragraphs)
@@ -207,7 +206,7 @@ export default {
         keyboard: {
             bindings: bindings
         },
-        toolbar: this.editorToolbar.length ? this.editorToolbar : defaultToolbar
+        toolbar: this.editorToolbar
       };
       if (this.useMarkdownShortcuts) {
         Quill.register("modules/markdownShortcuts", MarkdownShortcuts, true);
@@ -246,7 +245,6 @@ export default {
       this.quill.on("text-change", this.handleTextChange);
       this.quill.on("selection-change", this.handleSelectionChange);
 
-
       this.listenForEditorEvent("text-change");
       this.listenForEditorEvent("selection-change");
       this.listenForEditorEvent("editor-change");
@@ -266,7 +264,6 @@ export default {
       if (!range && oldRange) this.$emit("blur", this.quill);
       else if (range && !oldRange) this.$emit("focus", this.quill);
 
-
       if(this.$store.state.note.is_mobile){
        $( "#quill-container .ql-editor div" ).unbind( "click")
        $( "#quill-container .ql-editor div" ).bind( "click",  async(e)=>{
@@ -276,12 +273,11 @@ export default {
             while(!$(tree).hasClass('start-embed')){
               tree = tree.previousSibling
             }
-            let embRef = await Api.getEmbed(tree.getAttribute("emb-ref")).then()
+            let embRef = await Api.getEmbed(tree.getAttribute("emb-ref")).then();
             let note = await Api.getNote(embRef.note_id).then();
-
             let data = {'content': note, 'index': note['index']};
-            this.updateContent(data);
-               
+            this.update_content = true
+            this.updateContent(data);    
           }
           if($(tree).next().prop("tagName")=='UL' || $(tree).next().prop("tagName")=='LI'){
             $(tree).next().toggle();
@@ -521,13 +517,15 @@ export default {
         });
       }     
     },
+
     handleTextChange() {
        const selection = document.getSelection()
        if(selection.anchorNode != null){
           $(".auto-action").remove()
           $(".auto-notebook").remove()
-          const node = selection.getRangeAt(0).commonAncestorContainer
-          let tree = node.parentNode  
+          let node = selection.getRangeAt(0).commonAncestorContainer
+          let tree = node.parentNode
+          console.log('tree', tree)  
           if($(tree).hasClass('embed')){
             this.paragraphs = tree.outerHTML
             do{
@@ -536,9 +534,8 @@ export default {
             }while(!$(tree).hasClass('start-ref'))
             
             this.paragraphs_id = $(tree).attr('emb-ref')
-            tree = node.parentNode 
-            
-            while(!$(tree).hasClass('end-ref') && tree != null){ 
+            tree = node.parentNode.nextSibling
+            while(!$(tree).hasClass('end-ref') &&  tree != null){ 
                this.paragraphs = this.paragraphs + tree.outerHTML
                tree = tree.nextSibling
             }
@@ -546,9 +543,9 @@ export default {
             
           }else if($(tree).prop("tagName") == 'DIV' && typeof $(tree).attr("class") == 'undefined'){
              let match_actions = []
-             for(let i=0, j=0; i<actions.length; i++){
-                if(actions[i].toLowerCase().indexOf(tree.innerText.toLowerCase()) == 0){
-                  match_actions.push(actions[i])
+             for(let i=0, j=0; i<ACTIONS.length; i++){
+                if(ACTIONS[i].toLowerCase().indexOf(tree.innerText.toLowerCase()) == 0){
+                  match_actions.push(ACTIONS[i])
                 }
              }
                      
@@ -562,7 +559,7 @@ export default {
                 const selection = document.getSelection()
                 const node = selection.getRangeAt(0).commonAncestorContainer
                 const tree = node.parentNode
-                if(paragraphs.includes(e.currentTarget.innerText) == true){
+                if(EMBED.includes(e.currentTarget.innerText) == true){
                   this.is_paragraphs = true;
                   this.start_paragraphs = true;
                 }
@@ -588,9 +585,9 @@ export default {
             }
           }else if($(tree).attr('class')=='action' && node.parentNode.innerText.split(':')[1] != null){
              let matched_notebooks = []
-             for(let i=0, j=0; i<notebooks.length; i++){
-                if(notebooks[i].name.toLowerCase().indexOf(node.parentNode.innerText.split(':')[1].toLowerCase()) == 0){
-                  matched_notebooks.push(notebooks[i])
+             for(let i=0, j=0; i<NOTEBOOKS.length; i++){
+                if(NOTEBOOKS[i].name.toLowerCase().indexOf(node.parentNode.innerText.split(':')[1].toLowerCase()) == 0){
+                  matched_notebooks.push(NOTEBOOKS[i])
                 }
              }
             
@@ -641,8 +638,7 @@ export default {
           }
        }
 
-      let editorContent =
-        this.quill.getHTML() === "<div><br></div>" ? "" : this.quill.getHTML();
+      let editorContent = this.quill.getHTML() === "<div><br></div>" ? "" : this.quill.getHTML();
       this.$emit("input", editorContent);
     },
 

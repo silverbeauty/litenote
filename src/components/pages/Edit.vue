@@ -84,6 +84,7 @@
             }
         },
         note: this.content,
+        ref_id: this.index,
         html_content: "",
         selected_tab: 0,
         drop_menu: false
@@ -107,11 +108,19 @@
       note: function (newVal) {
         this.$emit('input', newVal)
       },
+      ref_id: function(newVal) {
+        this.$emit('input', newVal)
+      },
       content: function (newVal, oldVal) {
         if (newVal !== oldVal) {
           this.content = newVal
         }
       },
+      index: function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          this.index = newVal
+        }
+      }
     },
     async mounted(){
      $('.curtain').addClass('active')
@@ -131,14 +140,13 @@
     methods: {
       updateContent(data) {
         this.note = data.content
-        this.index = data.index
-        this.html_content = data.content.content
-        
+        this.ref_id = data.index
+        this.html_content = data.content.content  
       },
       moveHomePage: async function(){
           $('.curtain').removeClass('active')
           $('#quill-container').removeClass('open')
-          const index = this.index
+          const index = this.ref_id
           let content = $(".ql-editor").html()
           if(typeof this.note.references !='undefined'){
             for(let i =0; i<this.note.references.length; i ++){
@@ -149,10 +157,10 @@
            }
           }
           this.note.content = content
-              Api.updateNote(index, this.note)
-              setTimeout(()=>{
-                  this.$router.push({ name: 'home' });
-              }, 300)
+          Api.updateNote(index, this.note)
+          setTimeout(()=>{
+            this.$router.push({ name: 'home' });
+          }, 300)
       },
 
       moveEmbedPage: function(){
