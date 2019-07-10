@@ -4,20 +4,22 @@
   padding: 10px;
   border: none;
   
-  .start-embed{
+  .passive-emb.start-ref{
     border-radius: 5px 5px 0px 0px;
     padding-top: 5px;
     color: #b9b9b9;
   }
 
-  .end-embed{
+  .passive-emb.end-ref{
     height: 5px;
     border-radius: 0px 0px 5px 5px;
     margin-bottom: 10px;
+    background-color: #EBEBEB;
   }
 
-  .bg-lightGray{
+  .passive-emb{
     padding-left: 5px;
+    background-color: #EBEBEB;
   }
 }
 

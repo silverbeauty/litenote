@@ -153,9 +153,17 @@ export default {
           key: 'enter',
           handler: (range, context) => {
             const selection = document.getSelection()
-            const node = selection.getRangeAt(0).commonAncestorContainer
-            
-            if($(node.parentNode).prop("tagName") == 'DIV' && !$(node.parentNode).hasClass('ql-editor')){
+            let node = selection.getRangeAt(0).commonAncestorContainer
+            if($(node).hasClass('start-ref')){
+              this.quill.insertText(this.quill.getSelection(), '\n');
+              node = selection.getRangeAt(0).commonAncestorContainer
+              $(node).removeAttr('emb-ref')
+              $(node).removeClass('start-ref')        
+            }else if($(node).hasClass('end-ref')){
+              $(node).removeClass('end-ref')   
+              this.quill.insertText(this.quill.getSelection(), '\n');
+              $(node).addClass('end-ref')   
+            }else if($(node.parentNode).prop("tagName") == 'DIV' && !$(node.parentNode).hasClass('ql-editor')){
               $(node.parentNode).removeAttr('class')
               this.quill.insertText(this.quill.getSelection(), '\n');
             }else{
@@ -166,36 +174,22 @@ export default {
                 this.paragraphs_id = Api.createEmbed(this.paragraphs_title, this.$store.state.note.note_id)
                 this.start_paragraphs = false
                 const date = moment().format('MM/DD/YYYY')
-                this.paragraphs=`<div class="bg-lightGray start-embed" emb-ref="${this.paragraphs_id}" contenteditable="false">${date} - ${this.paragraphs_title}</div>`
-                node.parentNode.classList.add('start-ref')
-                node.parentNode.classList.add('bg-lightGray')
-                node.parentNode.setAttribute('contenteditable', 'false')
-                this.paragraphs+= node.parentNode.outerHTML
-                node.parentNode.classList.remove('bg-lightGray')
-                node.parentNode.setAttribute('contenteditable', 'true')
-                node.parentNode.setAttribute('emb-ref', this.paragraphs_id)
+                this.paragraphs=`<div class="embed start-ref" emb-ref="${this.paragraphs_id}">${date} - ${this.paragraphs_title}</div>`                              
                 node.parentNode.classList.add('embed')
+                this.paragraphs+= node.parentNode.outerHTML
+                node.parentNode.classList.add('start-ref')
+                node.parentNode.setAttribute('emb-ref', this.paragraphs_id)   
               }else{
                 if(node.innerHTML == '<br>'){
-                  node.previousSibling.classList.add('bg-lightGray')
-                  node.previousSibling.classList.add('end-embed')
-                  node.previousSibling.classList.add('end-ref')
                   node.previousSibling.classList.add('embed')
-                  node.previousSibling.setAttribute('contenteditable', 'false')
+                  node.previousSibling.classList.add('end-ref')
                   this.paragraphs+= node.previousSibling.outerHTML
-                  node.previousSibling.classList.remove('bg-lightGray')
-                  node.previousSibling.classList.remove('end-embed')
                   this.is_paragraphs = false
-                  node.setAttribute('contenteditable', 'true')
                   Api.updateEmbed(this.paragraphs_id, this.paragraphs)
                   this.paragraphs = ""
                 }else{
-                  node.parentNode.classList.add('bg-lightGray')
-                  node.parentNode.setAttribute('contenteditable', 'false')
-                  this.paragraphs+= node.parentNode.outerHTML
-                  node.parentNode.classList.remove('bg-lightGray')
-                  node.parentNode.setAttribute('contenteditable', 'true')
-                  node.parentNode.classList.add('embed')
+                   node.parentNode.classList.add('embed')
+                   this.paragraphs+= node.parentNode.outerHTML
                 }
               }
             } 
@@ -258,6 +252,9 @@ export default {
 
     handleInitialContent() {
       if (this.value) this.quill.root.innerHTML = this.value; 
+        setTimeout(()=>{
+        $(".passive-emb").attr('contenteditable','false');
+       }, 300)
     },
 
     handleSelectionChange(range, oldRange) {
@@ -269,8 +266,8 @@ export default {
        $( "#quill-container .ql-editor div" ).bind( "click",  async(e)=>{
           e.preventDefault();  
           let tree = e.currentTarget
-          if($(tree).hasClass("bg-lightGray")){
-            while(!$(tree).hasClass('start-embed')){
+          if($(tree).hasClass("passive-emb")){
+            while(!$(tree).hasClass('start-ref')){
               tree = tree.previousSibling
             }
             let embRef = await Api.getEmbed(tree.getAttribute("emb-ref")).then();
@@ -395,14 +392,15 @@ export default {
        $( "#quill-container .ql-editor div" ).bind( "dblclick",  async(e)=>{
           e.preventDefault();  
           let tree = e.currentTarget
-          if($(tree).hasClass("bg-lightGray")){
-            while(!$(tree).hasClass('start-embed')){
+          if($(tree).hasClass("passive-emb")){
+            while(!$(tree).hasClass('start-ref')){
               tree = tree.previousSibling
             }
             let embRef = await Api.getEmbed(tree.getAttribute("emb-ref")).then()
             let note = await Api.getNote(embRef.note_id).then();
 
             let data = {'content': note, 'index': note['index']};
+            this.update_content = true
             this.updateContent(data);
           }
           if($(tree).next().prop("tagName")=='UL' || $(tree).next().prop("tagName")=='LI'){
@@ -525,7 +523,6 @@ export default {
           $(".auto-notebook").remove()
           let node = selection.getRangeAt(0).commonAncestorContainer
           let tree = node.parentNode
-          console.log('tree', tree)  
           if($(tree).hasClass('embed')){
             this.paragraphs = tree.outerHTML
             do{

@@ -14,6 +14,7 @@ firebase.initializeApp(firebaseConfig)
 firebase.firestore().settings({
   cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
 })
+
 firebase.firestore().enablePersistence()
   .catch(function(err) {
     console.log('err', err)
@@ -21,7 +22,8 @@ firebase.firestore().enablePersistence()
       } else if (err.code == 'unimplemented') {
       }
   })
-  firebase.firestore().disableNetwork().then()
+firebase.firestore().disableNetwork().then()
+
 const Api = {
 
   install (Vue, options) {
@@ -41,7 +43,6 @@ const Api = {
   },
 
   getNoteList () {
- 
     let db = firebase.firestore();
     let data = []
     return new Promise((resolve, reject) =>{
@@ -100,50 +101,49 @@ const Api = {
 
   createEmbed(title, note_id){
     let db = firebase.firestore();
-
     let embedRef = db.collection("embed").doc();
     let embedId = embedRef.id;
+
     embedRef.set({
         title: title,
         note_id: note_id,
         created_at: new Date()
     });
 
-        db.collection("notes").where("title", "==", title).get().then(function(snapshot) {
-          if (snapshot.docs.length > 0) {
-              let references = snapshot.docs[0].data().references
-              references.push({
-                type: 'embed',
-                ref: embedId
-              })
-              db.collection("notes").doc(snapshot.docs[0].id).update({
-                content: snapshot.docs[0].data().content + `<div class="embed-ref" emb-ref="${embedId}"></div>`,
-                references: references,
-                updated_at: new Date()
-              });
-          } else{
-            db.collection("notes").add({
-                content: `<div class="embed-ref" emb-ref="${embedId}"></div>`,
-                title: title,
-                references: [{
-                  type: 'embed',
-                  ref: embedId
-                }],
-                created_at: new Date(),
-                updated_at: new Date()
-            })
-            .then(function(docRef) {
-                console.log("Document written with ID: ", docRef.id);
-            })
-            .catch(function(error) {
-                console.error("Error adding document: ", error);
-            });
-              console.log("No such document!");
-          }
+    db.collection("notes").where("title", "==", title).get().then(function(snapshot) {
+      if (snapshot.docs.length > 0) {
+        let references = snapshot.docs[0].data().references
+        references.push({
+          type: 'embed',
+          ref: embedId
+        })
+        
+        db.collection("notes").doc(snapshot.docs[0].id).update({
+          content: snapshot.docs[0].data().content + `<div class="embed-ref" emb-ref="${embedId}"></div>`,
+          references: references,
+          updated_at: new Date()
+        });
+      } else{
+        db.collection("notes").add({
+          content: `<div class="embed-ref" emb-ref="${embedId}"></div>`,
+          title: title,
+          references: [{
+            type: 'embed',
+            ref: embedId
+          }],
+          created_at: new Date(),
+          updated_at: new Date()
+        }).then(function(docRef) {
+          console.log("Document written with ID: ", docRef.id);
         }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });  
-        return embedId;
+          console.error("Error adding document: ", error);
+        });
+        console.log("No such document!");
+      }
+    }).catch(function(error) {
+      console.log("Error getting document:", error);
+    });  
+    return embedId;
   },
 
   updateEmbed(index, content) {

@@ -9,10 +9,11 @@
         <input v-model="note.title"/>
       </div>
       <div class="tab-bar">
-        <div class="drop-down" v-show="drop_menu">
+        <div class="drop-down"  @click="dropToggle()" 
+            v-click-outside="dropHidden">
           <div class="drop-down-link">
           </div>
-          <ul class="drop-items">
+          <ul class="drop-items" v-show="drop_menu">
               <li class="drop-item" @click="addTab()">Add</li>
               <li class="drop-item" @click="collapseTab()">Collapse</li>
               <li class="drop-item" @click="expandTab()">Expand</li>
@@ -125,16 +126,23 @@
     async mounted(){
      $('.curtain').addClass('active')
      $('.add-page-container').addClass('open')
-    
+    if(this.note.has_tabs){
+       this.note.content = this.note.tabs[0].content
+       document.querySelectorAll(".tab .tab-links")[this.selected_tab].classList.add("active")
+     }
      if(typeof this.note.references !='undefined'){ 
       for(let i =0; i<this.note.references.length; i ++){
           if(this.note.references[i].type = 'embed'){ 
             const embed = await Api.getEmbed(this.note.references[i].ref)
+            let embed_content = embed.content
+            embed_content = embed_content.replace(new RegExp('class="embed', 'g'), 'class="passive-emb embed')
             this.note.content = this.note.content.replace(new RegExp(`<div class="embed-ref" emb-ref="${this.note.references[i].ref}"></div>`), 
-                `${embed.content}`) 
+                `${embed_content}<div><br></div>`)
+            
           }
         }
      }
+
      this.html_content = this.note.content
     },
     methods: {
@@ -152,11 +160,18 @@
             for(let i =0; i<this.note.references.length; i ++){
               if(this.note.references[i].type = 'embed'){
               const embed = await Api.getEmbed(this.note.references[i].ref)
-              content = content.replace(new RegExp(embed.content), `<div class="embed-ref" emb-ref="${this.note.references[i].ref}"></div>`) 
+              let embed_content = embed.content
+              embed_content = embed_content.replace(new RegExp('class="embed', 'g'), 'class="passive-emb embed')
+              content = content.replace(new RegExp(embed_content), `<div class="embed-ref" emb-ref="${this.note.references[i].ref}"></div>`) 
             }
            }
           }
+
+        if(this.note.has_tabs){
+          this.note.tabs[this.selected_tab].content = content
+        }else{
           this.note.content = content
+        }
           Api.updateNote(index, this.note)
           setTimeout(()=>{
             this.$router.push({ name: 'home' });
@@ -183,7 +198,10 @@
         const content = $(".ql-editor").html()
         this.note.tabs[this.selected_tab].content = content
         this.selected_tab = index
-        this.content = this.note.tabs[index].content
+        this.html_content = this.note.tabs[index].content
+        $(".tab .tab-links").removeClass("active")
+        this.drop_menu = false
+        document.querySelectorAll(".tab .tab-links")[this.selected_tab].classList.add("active")
       },
       renameTab: function(index){
         document.querySelectorAll(".tab-links")[index].setAttribute("contenteditable",  "true");
@@ -193,99 +211,151 @@
         })
       },
       collapseTab: function(){
-
+        this.drop_menu = false
       },
       expandTab: function(){
-
+        this.drop_menu = false
       },
       summary: function(){
-
+        this.drop_menu = false
       },
       toggle: function(){
-
+        this.drop_menu = false
+      },
+      dropToggle: function(){
+        this.drop_menu = !this.drop_menu
+      },
+      dropHidden: function(){
+        this.drop_menu = false
       }
     }
   }
 </script>
 
 <style lang="scss">
-  .home-page{
-    padding: 15px;
-
-    .note-container{
-      margin-top: 15px;
-    }
-    .right-corner{
-      bottom: 60px;
-    }
-    .note-title{
-      font-size: 20px;
-    }
-  }
-  .tab-bar.bottom{
+.header{
+  display: flex;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 8px 8px 0px 0px;
+}
+.slide-effect{
+    height: calc(100% - 12px);
+    width: 100%;
+    position: fixed;
+    bottom: -100%;
+    left: 0px;
     background-color: white;
-    border-top: 1px solid #DFDFDF;
-  }
-  .tabItem{
-    opacity: 0.2;
-    zoom: 1.1;
-  }
-  .tabItem.active{
-    opacity: 1;
-  }
-  .search-bar{  
-    display: flex;
-    justify-content: space-around;
-  }
-  .search-input{
-    border: 0;
-    font-size: 15px;
-    border-radius: 5px;
-    padding: 10px;
-    width: calc(100% - 30px);
+    border-radius: 10px 10px 0 0;
+    -webkit-transition: all 0.3s;
+}
+.slide-effect.open{
+    bottom: 0%;
+    left: 0px;
+}
+.curtain {
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    -webkit-transition: all 0.3s;
+}
+.curtain.active {
+    background-color: rgba(0, 0, 0, 0.7);
+    -webkit-transition: all 0.3s;
+}
 
-    img{
-      margin-left: 5px;
-    }
+.title{
+  input{
+    padding-left: 20px;
+    padding-top: 10px;
+    font-size: 20px!important;
+    font-weight: 500;
   }
-  .search-input:focus{
+
+  input:focus{
     outline: none;
   }
-  .notebook-icon{
+}
+
+#my-toolbar{
+  white-space: nowrap;
+
+  .icon{
+    margin: 0px 2px;
+  }
+}
+.tab-bar{
+  position: absolute;
+  display: flex;
+  right: 10px;
+
+  .drop-down{
     position: relative;
-    opacity: 0.5;
+    z-index: 3;
+    right: 10px;
+    top: 10px;
+
+    .info-bar{
+      height: 30px;
+      margin-top: 5px;
+    }
+
+    .drop-down-link{
+      width: 35px;
+      display: block;
+      height: 10px;
+      margin: auto;
+      background-image: url('../../../public/images/icon-dots.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .drop-item{
+        list-style: none;
+        font-size: 13px;
+        width: 50px;
+        cursor: pointer;
+       user-select: none;
+      }
   }
-  .filtered{
-    display: none;
+
+  .ios{
+    margin-top: 5px;
+    width: 20px;
+    height: 15px;
   }
-  .searched{
+}
+.drop-items{
+  background: white;
+  padding: 10px;
+  box-shadow: 0px 0px 2px grey;
+  border-radius: 5px;
+  position: absolute;
+}
+.tab{
+  display: flex;
+  height: 37px;
+  overflow-x: auto;
+  border: 1px solid #eeeeee;
+
+  .tab-links{
     display: block;
-
-    h3.title{
-      color: #7e7e7e;
-    }
-  }
-  .search-note{
-    display: flex;
-    padding-top: 10px;
-    cursor: pointer;
-
-    img{
-      width: 30px;
-      margin-right: 15px;
-    }
-    span{
-      color: #7e7e7e;
-      font-size: 20px;
-      font-weight: 500;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-  }
-  .search-total{
+    flex: 1;
+    min-width: 150px;
+    height: 100%;
+    background-color: #f2f2f2;
     text-align: center;
-    margin: 7px;
-    color: #7e7e7e;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: #b9b9b9;
   }
+  .tab-links.active{
+    background-color: white;
+    color: #4f4f4f;
+  }
+}
 </style>

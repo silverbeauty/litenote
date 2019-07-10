@@ -117,7 +117,11 @@ export default {
       $('.curtain').removeClass('active')
       $('.add-page-container').removeClass('open')
       const content = $(".ql-editor").html()
-      this.note.content = content
+      if(this.note.has_tabs){
+        this.note.tabs[this.selected_tab].content = content
+      }else{
+        this.note.content = content
+      }
        if(this.note.title !=""){
         Api.updateNote(this.$store.state.note.note_id, this.note)
       }else{
@@ -171,16 +175,16 @@ export default {
        })
     },
     collapseTab: function(){
-      this.drop_menu = !this.drop_menu
+      this.drop_menu = false
     },
     expandTab: function(){
-      this.drop_menu = !this.drop_menu
+      this.drop_menu = false
     },
     summary: function(){
-      this.drop_menu = !this.drop_menu
+      this.drop_menu = false
     },
     toggle: function(){
-      this.drop_menu = !this.drop_menu
+      this.drop_menu = false
     },
     dropToggle: function(){
       this.drop_menu = !this.drop_menu
