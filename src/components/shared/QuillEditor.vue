@@ -154,22 +154,27 @@ export default {
           handler: (range, context) => {
             const selection = document.getSelection()
             let node = selection.getRangeAt(0).commonAncestorContainer
-            if($(node).hasClass('start-ref')){
+            if($(node.parentNode).hasClass('start-ref')){
               this.quill.insertText(this.quill.getSelection(), '\n');
               node = selection.getRangeAt(0).commonAncestorContainer
               $(node).removeAttr('emb-ref')
               $(node).removeClass('start-ref')        
-            }else if($(node).hasClass('end-ref')){
+            }else if($(node.parentNode).hasClass('end-ref')){
               $(node).removeClass('end-ref')   
               this.quill.insertText(this.quill.getSelection(), '\n');
               $(node).addClass('end-ref')   
+            }else if($(node.parentNode).hasClass('embed')){
+              this.quill.insertText(this.quill.getSelection(), '\n');
             }else if($(node.parentNode).prop("tagName") == 'DIV' && !$(node.parentNode).hasClass('ql-editor')){
               $(node.parentNode).removeAttr('class')
               this.quill.insertText(this.quill.getSelection(), '\n');
             }else{
               this.quill.insertText(this.quill.getSelection(), '\n');
             }
-            if(this.is_paragraphs == true){
+            if(this.is_paragraphs == true && $(node.parentNode).prop("tagName") == 'LI'){
+              node.parentNode.parentNode.classList.add('embed');
+            }
+            if(this.is_paragraphs == true && $(node.parentNode).prop("tagName") != 'LI'){
               if(this.start_paragraphs){
                 this.paragraphs_id = Api.createEmbed(this.paragraphs_title, this.$store.state.note.note_id)
                 this.start_paragraphs = false

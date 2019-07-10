@@ -163,14 +163,22 @@ export default {
       this.selected_tab = index
       this.content = this.note.tabs[index].content
       $(".tab .tab-links").removeClass("active")
-      this.drop_menu = !this.drop_menu
+      this.drop_menu = false
       document.querySelectorAll(".tab .tab-links")[this.selected_tab].classList.add("active")
     },
 
     renameTab: function(index){
-      document.querySelectorAll(".tab-links")[index].setAttribute("contenteditable",  "true");
-       $( ".tab-links" ).bind( "blur", (e)=>{
-         this.note.tabs[index].title = e.currentTarget.innerText
+      const content = $(".ql-editor").html()
+      this.note.tabs[this.selected_tab].content = content
+      this.selected_tab = index
+      $(".tab .tab-links").removeClass("active")
+      this.drop_menu = false
+      document.querySelectorAll(".tab .tab-links")[this.selected_tab].classList.add("active")
+      document.querySelectorAll(".tab-links")[index].setAttribute("contenteditable",  "true")
+
+      $( ".tab-links" ).bind( "blur", (e)=>{
+         e.preventDefault()
+         this.note.tabs[this.selected_tab].title = e.currentTarget.innerText
          $(".tab-links" ).removeAttr("contenteditable")
        })
     },

@@ -1,8 +1,13 @@
 .ql-editor {
   min-height: 200px;
   font-size: 16px;
-  padding: 10px;
   border: none;
+  padding: 0px;
+  padding-top: 10px;
+  
+  div{
+    padding-left: 15px;
+  }
   
   .passive-emb.start-ref{
     border-radius: 5px 5px 0px 0px;
@@ -127,9 +132,6 @@
   left: 0px;
 }
 
-.ql-editor div{
-  padding-left: 15px;
-}
 .ql-editor div[display=false], .ql-editor li[display=false]{
   position: relative;
 }

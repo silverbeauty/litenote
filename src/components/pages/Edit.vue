@@ -352,6 +352,7 @@
     justify-content: center;
     flex-direction: column;
     color: #b9b9b9;
+    border: 1px solid #eeeeee;
   }
   .tab-links.active{
     background-color: white;
