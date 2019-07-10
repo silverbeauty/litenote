@@ -146,6 +146,15 @@
 
     .note-container{
       margin-top: 15px;
+      .note-item{
+        background-color: white;
+        min-height: 120px;
+
+        .note-content{
+          max-height: 90px;
+          overflow: hidden;
+        }
+      }
     }
     .right-corner{
       bottom: 60px;
