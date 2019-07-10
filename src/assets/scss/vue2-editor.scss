@@ -118,7 +118,7 @@
   transform: translateY(-50%);
 }
 
-.ql-editor p[display=false]::before{
+.ql-editor div[display=false]::before{
   content:'\2023';
   font-size: 1.8em;
   position: absolute;
@@ -127,10 +127,10 @@
   left: 0px;
 }
 
-.ql-editor p{
+.ql-editor div{
   padding-left: 15px;
 }
-.ql-editor p[display=false], .ql-editor li[display=false]{
+.ql-editor div[display=false], .ql-editor li[display=false]{
   position: relative;
 }
 
