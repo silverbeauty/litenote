@@ -8,18 +8,15 @@
     </div>
     <div class="search-bar">
       <input type="text" class="search-input bg-lightGray" v-model="search_key" placeholder="Search" />
-      <img src="images/icon-notebook.svg" class="embedbook-icon">
+      <button type="secondary" class="" @click="moveAddPage()">Cancel</button>
     </div>
     <div class="embed-container">
     <EmbedItem v-for="(embed, i) in embed_items" 
               :key="i" 
               :embed="embed"
-              @click.native="moveEditPage(i)"
+              :moveQuotePage="moveQuotePage"
         />   
       </div>
-  <div class="right-corner">   
-    <button type="secondary" class="circle-btn bg-lightGreen" @click="moveAddPage()">+</button>
-  </div>
   <div class="tab-bar bottom">   
     <img src="images/tab-home.svg" class="tabItem active" data-tab="home" />
     <img src="images/tab-today.svg" class="tabItem" data-tab="today" />
@@ -51,19 +48,9 @@
         clearInterval(this.interval)
     },
     methods: {
-      moveAddPage: function() {
-        this.$router.push({ name: 'add' });
-      },
-      moveEditPage: function(key) {
-        const content = this.embed_items[key]
-        const index = this.embed_items[key]['index']
-       
-        if(this.search_option == 0){
-          this.$router.push({ name: 'edit', params: {'content': content, 'index': index} });
-        }else{
-          const search_key = this.search_key
-          this.$router.push({ name: 'search', params: {'content': content, 'search_key': search_key} })
-        }
+      moveQuotePage: function(content) {
+        const params = {content: content}
+        this.$router.push({ name: 'quote', params: params });
       },
     },
     watch: {      

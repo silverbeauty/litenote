@@ -9,8 +9,10 @@
         <input v-model="note.title"/>
       </div>
       <div class="tab-bar">
-        <div class="drop-down"  @click="dropToggle()" 
-            v-click-outside="dropHidden">
+        <div class="drop-down"  
+            @click="dropToggle()" 
+             v-click-outside="dropHidden"
+          >
           <div class="drop-down-link">
           </div>
           <ul class="drop-items" v-show="drop_menu">
@@ -41,6 +43,8 @@
       use-markdown-shortcuts
       :editor-options="editorOptions"
       :updateContent="updateContent"
+      :event="event"
+      :insert_content="selected_content"
     >
       <div id="my-toolbar" slot="toolbar">
         <button class="ql-image"></button>
@@ -75,6 +79,7 @@
 </template>
 <script>
   import Api from "../../api/api";
+  import Vue from 'vue'
   export default {
     name: 'EditPage',
     data () {
@@ -85,10 +90,13 @@
             }
         },
         note: this.content,
-        ref_id: this.index,
+        ref_id: "",
         html_content: "",
         selected_tab: 0,
-        drop_menu: false
+        is_initial: true,
+        is_updated: false,
+        drop_menu: false,
+        event: new Vue({}),
       }
     },  
     props: {
@@ -96,13 +104,10 @@
           default: {},
           type: Object
         },
-        index: {
-            default: "",
-            type: String
-        },
-        search_key: {
-          default: "",
-          type: String
+        selected_content: {
+          default: () => ({
+          }),
+          type: Object
         }
     },
     watch: {
@@ -117,16 +122,20 @@
           this.content = newVal
         }
       },
-      index: function(newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.index = newVal
+      html_content: function(newVal, oldVal) {
+        if (newVal !== oldVal && this.is_initial) {
+          this.html_content = newVal
+          this.is_initial = false
+        }else if(newVal != oldVal && !this.is_initial){
+          this.html_content = newVal
+          this.is_updated = true
         }
       }
     },
     async mounted(){
      $('.curtain').addClass('active')
      $('.add-page-container').addClass('open')
-    if(this.note.has_tabs){
+     if(this.note.has_tabs){
        this.note.content = this.note.tabs[0].content
        document.querySelectorAll(".tab .tab-links")[this.selected_tab].classList.add("active")
      }
@@ -142,7 +151,6 @@
           }
         }
      }
-
      this.html_content = this.note.content
     },
     methods: {
@@ -154,7 +162,7 @@
       moveHomePage: async function(){
           $('.curtain').removeClass('active')
           $('#quill-container').removeClass('open')
-          const index = this.ref_id
+          const index = this.note['index']
           let content = $(".ql-editor").html()
           if(typeof this.note.references !='undefined'){
             for(let i =0; i<this.note.references.length; i ++){
@@ -172,8 +180,10 @@
         }else{
           this.note.content = content
         }
-          Api.updateNote(index, this.note)
-          setTimeout(()=>{
+        if(this.is_updated){
+          Api.updateNote(index, this.note) 
+        }    
+       setTimeout(()=>{
             this.$router.push({ name: 'home' });
           }, 300)
       },
@@ -182,6 +192,9 @@
         this.html_content = ""
         $('.curtain').removeClass('active')
         $('#quill-container').removeClass('open')
+        
+        this.event.$emit('ops')
+        this.$store.state.note.note = this.note
         setTimeout(()=>{
           this.$router.push({ name: 'embed' });
         }, 300)
@@ -266,10 +279,9 @@
     background-color: rgba(0, 0, 0, 0.7);
     -webkit-transition: all 0.3s;
 }
-
 .title{
   input{
-    padding-left: 20px;
+    padding-left: 25px;
     padding-top: 10px;
     font-size: 20px!important;
     font-weight: 500;
@@ -279,7 +291,6 @@
     outline: none;
   }
 }
-
 #my-toolbar{
   white-space: nowrap;
 

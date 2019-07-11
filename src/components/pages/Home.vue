@@ -47,10 +47,9 @@
       },
       moveEditPage: function(key) {
         const content = this.notes[key]
-        const index = this.notes[key]['index']
        
         if(this.search_option == 0){
-          this.$router.push({ name: 'edit', params: {'content': content, 'index': index} });
+          this.$router.push({ name: 'edit', params: {'content': content} });
         }else{
           const search_key = this.search_key
           this.$router.push({ name: 'search', params: {'content': content, 'search_key': search_key} })
@@ -146,9 +145,10 @@
 
     .note-container{
       margin-top: 15px;
+      
       .note-item{
         background-color: white;
-        min-height: 120px;
+        min-height: 135px;
 
         .note-content{
           max-height: 90px;

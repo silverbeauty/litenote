@@ -3,9 +3,10 @@
     <vue-editor
       v-model="note.content"
       use-markdown-shortcuts
+      quote="quote"
+      :selectQuote="selectQuote"
     >
     </vue-editor>
-      <button class="circle-btn right-corner" @click="moveHomePage()">×</button>
     </div>
 </template>
 
@@ -19,12 +20,12 @@
     },
     props: {
         content: {
-          default: "",
-          type: String
+          default: {},
+          type: Object
         },
-        search_key: {
-          default: "",
-          type: String
+        quote: {
+          default: true,
+          type: Boolean
         }
     },
     watch: {
@@ -38,18 +39,15 @@
       },
     },
 
-    mounted: function() {
-      if(this.search_key != ""){
-        this.note.content = $(".ql-editor").html().replace(new RegExp(this.search_key, 'i'), '<span class="search-key">'+this.search_key+'</span>')
-      }
-    },
-
     methods: {
-        movePage: function(){
+        selectQuote: function(selected_content){
             $('.curtain').removeClass('active')
             $('#quill-container').removeClass('open')
+
+
             setTimeout(()=>{
-                this.$router.push({ name: 'home' });
+              const params = {'content': this.$store.state.note.note, 'selected_content': selected_content }
+              this.$router.push({ name: 'edit' , params: params});
             }, 300)
         }
     }

@@ -25,6 +25,7 @@ import MarkdownShortcuts from "@/helpers/markdown-shortcuts";
 import moment from 'moment';
 import Api from '../../api/api';
 import { ACTIONS, NOTEBOOKS, EMBED, DAYS } from '../../config/contants';
+import Vue from 'vue'
 
 export default {
   name: "VueEditor",
@@ -66,7 +67,26 @@ export default {
       type: Boolean,
       default: false
     },
-    updateContent: { type: Function },
+    updateContent: { 
+      type: Function 
+    },
+    selectQuote: {
+      type: Function
+    },
+    quote: {
+      type: Boolean,
+      default: false
+    },
+    event: {
+      type: Object,
+      default:  () => ({
+      }),
+    },
+    insert_content: {
+      type: Object,
+      default: () => ({
+      })
+    }   
   },
 
   data: () => ({
@@ -76,7 +96,7 @@ export default {
     paragraphs_id: "",
     paragraphs: "",
     note_id: "",
-    update_content: false,
+    update_content: false
   }),
  
   watch: {
@@ -96,6 +116,18 @@ export default {
     this.registerPrototypes();
     this.initializeEditor();
     this.$store.state.note.notebooks = NOTEBOOKS
+
+    if(typeof this.event.$on == 'function'){
+      this.event.$on('ops', () => {
+        this.$store.state.note.opt = this.quill.getSelection()
+        });
+    } 
+    if(this.insert_content.ops != null){
+       setTimeout(()=>{
+        this.quill.insertText( this.$store.state.note.opt.index, this.insert_content.ops[0].insert)  
+        this.insert_content.ops = null
+       }, 300) 
+    }
   },
 
   beforeDestroy() {
@@ -265,6 +297,19 @@ export default {
     handleSelectionChange(range, oldRange) {
       if (!range && oldRange) this.$emit("blur", this.quill);
       else if (range && !oldRange) this.$emit("focus", this.quill);
+
+      if(range != null){
+        if(range.length > 0 && this.quote == true){
+          $(".quote-selection").remove()
+          $(".quillWrapper" ).append( "<div class='quote-selection'>Quote Selection</div>" ); 
+          $(".quote-selection").bind("click", (e) => {
+            e.preventDefault()
+            let selection = this.quill.getSelection();
+            let selected_content = this.quill.getContents(selection.index, selection.length)
+            this.selectQuote(selected_content)
+          })
+        }
+      }
 
       if(this.$store.state.note.is_mobile){
        $( "#quill-container .ql-editor div" ).unbind( "click")
@@ -723,6 +768,22 @@ export default {
     span:first-child {
       font-weight: 600;
     }
+}
+.quote-selection{
+    position: absolute;
+    bottom: 10px;
+    display: block;
+    color: black;
+    font-size: 19px;
+    font-weight: 700;
+    background-color: #50e3c2;
+    width: 300px;
+    height: 40px;
+    user-select: none;
+    text-align: center;
+    padding-top: 6px;
+    border-radius: 5px;
+    left: calc(50% - 150px);
 }
 </style>
 

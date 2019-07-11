@@ -241,7 +241,7 @@ export default {
 
 .title{
   input{
-    padding-left: 20px;
+    padding-left: 25px;
     padding-top: 10px;
     font-size: 20px!important;
     font-weight: 500;

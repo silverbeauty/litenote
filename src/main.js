@@ -38,6 +38,7 @@ import Edit from './components/pages/Edit'
 import Add from './components/pages/Add'
 import Search from './components/pages/Search'
 import Embed from './components/pages/Embed'
+import Quote from './components/pages/Quote'
 
 //set vue routes
 const routes = [
@@ -69,7 +70,13 @@ const routes = [
       path: '/embed',
       component: Embed,
       props: true
-  }
+    },
+    {
+      name: 'quote',
+      path: '/quote',
+      component: Quote,
+      props: true
+    }
 ]
 
 const router = new VueRouter({ mode: 'history', routes: routes });

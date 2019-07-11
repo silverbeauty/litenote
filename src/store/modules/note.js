@@ -1,7 +1,8 @@
 const state = {
-  notebooks: [],
+  note: {},
   is_mobile: false,
-  note_id: ""
+  note_id: "",
+  opt: null
 }
 
 const mutations = {
