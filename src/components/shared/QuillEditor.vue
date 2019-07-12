@@ -124,7 +124,36 @@ export default {
     } 
     if(this.insert_content.ops != null){
        setTimeout(()=>{
-        this.quill.insertText( this.$store.state.note.opt.index, this.insert_content.ops[0].insert)  
+        this.quill.setSelection(this.$store.state.note.opt.index)
+        const selection = document.getSelection()
+        let node = selection.getRangeAt(0).commonAncestorContainer
+        
+        this.quill.insertText( this.$store.state.note.opt.index, this.insert_content.ops[0].insert)
+        let tree
+        if(node.innerHTML == '<br>'){
+          tree = node
+        }else{
+          tree = node.parentNode
+        }
+        
+        if(this.insert_content.ops[0].insert.split('\n').length>0){
+          tree.nextSibling.classList.add('quote-start')
+        }
+  
+        for(let i =0; i<this.insert_content.ops[0].insert.split('\n').length; i++){
+          tree = tree.nextSibling
+          tree.classList.add('quote')
+        }    
+
+        if(this.insert_content.ops[0].insert.split('\n').length>0){
+          tree.classList.add('quote-end')
+        }
+
+        this.quill.setSelection(this.$store.state.note.opt.index + this.insert_content.ops[0].insert.length)
+        this.quill.insertText(this.quill.getSelection(), '\n')
+
+        tree.nextSibling.removeAttribute("class")
+        $(".quote").attr('contenteditable','false');
         this.insert_content.ops = null
        }, 300) 
     }
@@ -191,7 +220,7 @@ export default {
               node = selection.getRangeAt(0).commonAncestorContainer
               $(node).removeAttr('emb-ref')
               $(node).removeClass('start-ref')        
-            }else if($(node.parentNode).hasClass('end-ref')){
+            }else if($(node).hasClass('end-ref')){
               $(node).removeClass('end-ref')   
               this.quill.insertText(this.quill.getSelection(), '\n');
               $(node).addClass('end-ref')   
@@ -784,6 +813,20 @@ export default {
     padding-top: 6px;
     border-radius: 5px;
     left: calc(50% - 150px);
+}
+.quote{
+  border-right: 2px solid #a4a0a0b0;
+  border-left: 2px solid #a4a0a0b0;
+  padding: 0px 5px;
+  margin: 0px 10px;
+}
+.quote-start{
+  border-top: 2px solid #a4a0a0b0;
+  border-radius: 5px 5px 0px 0px;
+}
+.quote-end{
+  border-bottom: 2px solid #a4a0a0b0;
+  border-radius: 0px 0px 5px 5px;
 }
 </style>
 

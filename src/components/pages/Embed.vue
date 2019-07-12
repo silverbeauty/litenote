@@ -8,7 +8,7 @@
     </div>
     <div class="search-bar">
       <input type="text" class="search-input bg-lightGray" v-model="search_key" placeholder="Search" />
-      <button type="secondary" class="" @click="moveAddPage()">Cancel</button>
+      <button type="secondary" class="" @click="$router.go(-1)">Cancel</button>
     </div>
     <div class="embed-container">
     <EmbedItem v-for="(embed, i) in embed_items" 
