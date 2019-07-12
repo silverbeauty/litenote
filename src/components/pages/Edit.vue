@@ -177,6 +177,10 @@
 
         if(this.note.has_tabs){
           this.note.tabs[this.selected_tab].content = content
+          for(let i =0; i< this.note.tabs.length; i ++){
+            this.note.content += this.note.tabs[i].title
+            this.note.content += this.note.tabs[i].content
+          }
         }else{
           this.note.content = content
         }

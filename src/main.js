@@ -45,7 +45,8 @@ const routes = [
     {
         name: 'home',
         path: '/',
-        component: Home
+        component: Home,
+        props: true
     },
     {
         name: 'edit',

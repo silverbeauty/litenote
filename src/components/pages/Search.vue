@@ -1,7 +1,21 @@
 <template>
     <div class="container-wrapper paddingbottom70">
+    <div class="header">
+      <div class="title">
+        <input v-model="note.title" ref="title" disabled/>
+      </div>
+    </div>
+    <div class="tab" v-show="note.has_tabs">
+      <a class="tab-links"
+              v-for="(tab, i) in note.tabs"   
+              :key="i" 
+              @click="switchTab(i)"
+              >
+              {{tab.title}}
+      </a>
+    </div>
     <vue-editor
-      v-model="note.content"
+      v-model="html_content"
       use-markdown-shortcuts
     >
     </vue-editor>
@@ -15,6 +29,7 @@
     data () {
       return {
         note: this.content,
+        html_content: ""
       }
     },
     props: {
@@ -39,8 +54,16 @@
     },
     mounted: function() {
       if(this.search_key != ""){
-        this.note.content = $(".ql-editor").html().replace(new RegExp(this.search_key, 'gi'), (match) => {
-            return '<span class="search-key">'+match+'</span>'})
+        if(this.note.has_tab){
+          this.note.tabs[0].content = this.note.tabs[0].content.replace(new RegExp(this.search_key, 'gi'), (match) => {
+              return '<span class="search-key">'+match+'</span>'})
+          this.html_content = this.note.tabs[0].content
+        }else{
+          this.note.content = this.note.content.replace(new RegExp(this.search_key, 'gi'), (match) => {
+              return '<span class="search-key">'+match+'</span>'})
+            this.html_content = this.note.content
+        }
+        
       }
     },
     methods: {
@@ -48,9 +71,18 @@
         $('.curtain').removeClass('active')
         $('#quill-container').removeClass('open')
         setTimeout(()=>{
-            this.$router.push({ name: 'home' });
+          const params = {'search': this.search_key}
+          this.$router.push({ name: 'home', params: params });
         }, 300)
-      }
+      },
+    switchTab: function(index){
+      this.selected_tab = index
+      this.note.tabs[index].content = this.note.tabs[index].content.replace(new RegExp(this.search_key, 'gi'), (match) => {
+              return '<span class="search-key">'+match+'</span>'})
+      this.html_content = this.note.tabs[index].content
+      $(".tab .tab-links").removeClass("active")
+      document.querySelectorAll(".tab .tab-links")[this.selected_tab].classList.add("active")
+    },
     }
   }
 </script>
@@ -73,4 +105,27 @@
   .search-key{
     background-color:#a7f0e0;
   }
+  .tab{
+  display: flex;
+  height: 37px;
+  overflow-x: auto;
+  border: 1px solid #eeeeee;
+
+  .tab-links{
+    display: block;
+    flex: 1;
+    min-width: 150px;
+    height: 100%;
+    background-color: #f2f2f2;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    color: #b9b9b9;
+  }
+  .tab-links.active{
+    background-color: white;
+    color: #4f4f4f;
+  }
+}
 </style>

@@ -26,16 +26,66 @@
 <script>
   import Api from '../../api/api'
   import NoteItem from '../shared/NoteItem'
+import { setTimeout } from 'timers';
 
   export default {
     name: 'HomePage',
     components: {
       NoteItem,
     },
+    props: {
+      search: {
+        default: "",
+        type: String
+      }
+    },
     mounted: function() { 
       Api.getNoteList().then((notes)=>{
         this.notes = notes;
       })
+      
+      setTimeout(()=>{
+        if(this.search_key != ""){
+          let val = this.search_key
+            document.querySelectorAll(".note-item .note-title").forEach(element =>{
+              if($(element).text().toLowerCase().indexOf(val.toLowerCase())>-1){
+                $(element).html( $(element).text().replace(new RegExp(val, 'g'), '<span style="text-decoration: underline">'+val+'</span>') )
+               $(element.parentNode).addClass("searched")
+                $(element.parentNode).removeClass("filtered")
+              }else{
+               $(element.parentNode).addClass("filtered")
+               $(element.parentNode).removeClass("searched")
+              }
+            })
+            $(".search-total").remove()
+            $(".search-note").remove()
+             if(val != ""){
+            $(".container-wrapper").append(`<div class="search-note"><img src="images/icon-search.png"/><span>Search notes for "${val}"</span></div>`)
+             $(".search-note").bind("click", ()=>{
+              let total_found = 0
+              this.search_option = 1
+              $(".search-total").remove()
+              $(".note-item").addClass("filtered")
+              $(".note-item").removeClass("searched")
+               document.querySelectorAll(".note-item .note-title").forEach(element =>{
+                  $(element).html( $(element).text().replace(new RegExp(null, 'g'), '<span style="text-decoration: underline">'+val+'</span>') )
+               })
+              for(let i =0; i< document.querySelectorAll(".note-item").length; i ++){
+                let note_item = document.querySelectorAll(".note-item")[i]
+                for(let j =0; j< note_item.querySelectorAll("div").length; j++){
+                  if($(note_item.querySelectorAll("div")[j]).text().toLowerCase().indexOf(val.toLowerCase())>-1){
+                    total_found +=1
+                    $(note_item.querySelectorAll("div")[j].parentNode).removeClass("filtered")
+                    $(note_item.querySelectorAll("div")[j].parentNode).addClass("searched")
+                    break;
+                  }
+                }
+              }
+             $( `<p class="search-total">Searching... ${total_found} notes found</p>` ).insertAfter( $( ".search-bar" ) );
+            })
+          }
+        }
+      },300)
       this.mobileCheck()
     },
     beforeDestroy () {
@@ -49,10 +99,12 @@
         const content = this.notes[key]
        
         if(this.search_option == 0){
-          this.$router.push({ name: 'edit', params: {'content': content} });
+          const params = {'content': content}
+          this.$router.push({ name: 'edit', params: params });
         }else{
           const search_key = this.search_key
-          this.$router.push({ name: 'search', params: {'content': content, 'search_key': search_key} })
+          const params = {'content': content, 'search_key': search_key}
+          this.$router.push({ name: 'search', params: params })
         }
       },
       mobileCheck: function(){
@@ -61,8 +113,8 @@
         this.$store.state.note.is_mobile = check;
       }
     },
-    watch: {      
-        search_key: function(val, old) {
+    watch: {  
+      search_key: function(val, old) {  
           if(this.search_option == 0){
             document.querySelectorAll(".note-item .note-title").forEach(element =>{
               if($(element).text().toLowerCase().indexOf(val.toLowerCase())>-1){
@@ -132,11 +184,13 @@
             }
         }
     },
-    data: () => ({
-      notes: [],
-      search_key: "",
-      search_option: 0,
-    })
+    data() {
+      return {
+        notes: [],
+        search_key: this.search,
+        search_option: 0,
+     }
+    }
   }
 </script>
 <style lang="scss">
